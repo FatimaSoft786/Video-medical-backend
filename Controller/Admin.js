@@ -189,7 +189,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
 //doctors list
  const doctors = async(req,res)=>{
   try {
-    const doctors = await Doctors.find({account_approved: false});
+    const doctors = await Doctors.find({}, '-password');
      res.json({success: true,total_doctors: doctors.length, doctors_list: doctors});
 
   } catch (error) {
@@ -201,7 +201,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
  const patients = async(req,res)=>{
   try {
     
-    const patients = await Patients.find({});
+    const patients = await Patients.find({}, '-password');
      res.json({success: true,total_patients: patients.length, patients_list: patients});
 
   } catch (error) {
@@ -209,7 +209,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
     return res.json({success: false, message: 'Internal Server error'});
   }
  }
- //account approval
+ //account approval request
  const doctorsAccounts = async(req,res)=>{
 
   const {id} = req.params;
