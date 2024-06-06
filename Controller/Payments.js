@@ -38,6 +38,42 @@ const CheckoutSession = async (req, res) => {
     res.status(500).send(error.message)
   }
 };
+
+const createPayment = async(req,res)=>{
+  try {
+
+      
+     const admin_amount  = req.body.session_fee * 0.25;
+     const doctor_amount = req.body.session_fee - admin_amount;
+     const data = await Payment.create({
+      patient: req.body.patientId,
+      doctor: req.body.doctorId,
+      session_fee: req.body.session_fee,
+      admin_percentage_amount: admin_amount,
+      doctor_percentage_amount: doctor_amount
+    })
+   res.json({success: true, message: data})
+    
+  } catch (error) {
+    console.log(error.message);
+   return res.json({success: false,message: "Internal server error"})
+  }
+};
+
+const getPayments = async(req,res)=>{
+  try {
+    const payments = await Payment.find().populate('patient', '_id firstName lastName picture_url');
+    res.json({success: true, total_payments: payments.length,payments_list: payments});
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+
+
+
 module.exports = {
-  CheckoutSession
+  CheckoutSession,
+  createPayment,
+  getPayments
 };

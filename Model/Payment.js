@@ -1,19 +1,26 @@
 const mongoose = require("mongoose")
 const paymentSchema = new mongoose.Schema({
-    patientId: {
-        type: mongoose.Schema.Types.ObjectId,
-        "ref": "Patient"
+    patient: {
+        type: mongoose.Schema.Types.ObjectId, "ref": "Patient"
     },
-    visit_fee: {
-        type: String
+    doctor: {
+        type: mongoose.Schema.Types.ObjectId, "ref": "Doctor"
     },
-    service: {
-        type: String
+    session_fee: {
+        type: Number
     },
-    doctorId: {
-        type: String
+    admin_percentage_amount: {
+        type: Number
+    },
+    doctor_percentage_amount: {
+        type: Number
+    },
+    payment_status: {
+        type: "String",
+        default: "Unpaid"
     }
-},{
+},
+{
     timestamps: true
 });
-module.exports = mongoose.model("Payments",paymentSchema);
+module.exports = mongoose.model("Payment",paymentSchema);

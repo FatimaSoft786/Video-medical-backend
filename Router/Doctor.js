@@ -1,5 +1,5 @@
 const express = require("express");
-const {register,login,verifyOtp,fetchUserByID,availability,sessions,checkEmail,resetPassword,uploadProfilePicture,deleteProfilePicture,addReview,deleteReview} = require("../Controller/Doctor");
+const {register,login,verifyOtp,fetchUserByID,availability,sessions,checkEmail,resetPassword,uploadProfilePicture,deleteProfilePicture,addReview,deleteReview,deleteDoctor} = require("../Controller/Doctor");
 const {service} = require("../Controller/Service")
 var fetchUser = require('../middleware/fetchUser');
 const router = express.Router();
@@ -15,6 +15,7 @@ router.post("/register",service);
 router.post("/addslots",fetchUser,availability);
 router.post("/addReview",addReview);
 router.delete('/deleteReview/:id',deleteReview);
+router.delete('/deleteDoctor',deleteDoctor);
 
 
 module.exports = router;

@@ -5,6 +5,9 @@ const nodemailer = require("nodemailer");
 const moment = require("moment");
 const Doctors = require("../Model/Doctor");
 const Patients = require("../Model/Patient");
+const appointments = require("../Model/Appointments");
+const Appointments = require("../Model/Appointments");
+const Payments = require("../Model/Payment");
 
 let transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -173,13 +176,21 @@ const { email, password } = req.body;
 //patient doctors,appointments count
 const countData = async(req,res)=>{
   try {
-
 const doctors = await Doctors.find();
 const patient = await Patients.find();
-res.json({success: true, total_doctors: doctors.length,total_patients: patients.length});
-
-
-    
+const appointments = await Appointments.find();
+const payments = await Payments.find();
+const adminAmountsDict = {};
+ payments.forEach(payment => {
+    adminAmountsDict[payment._id] = payment.admin_percentage_amount || 0;
+  });
+  let totalAdminAmount = 0;
+  payments.forEach(payment => {
+    const adminAmount = adminAmountsDict[payment._id] || 0;
+    totalAdminAmount += adminAmount;
+   // console.log(`Payment ID: ${payment._id}, Admin Percentage Amount: ${adminAmount}`);
+  });
+res.json({success: true, total_doctors: doctors.length,total_patients: patients.length, total_appointments: appointments.length,admin_revenue: totalAdminAmount});    
   } catch (error) {
      console.log(error.message);
     return res.json({success: false, message: 'Internal Server error'});
@@ -209,6 +220,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
     return res.json({success: false, message: 'Internal Server error'});
   }
  }
+
  //account approval request
  const doctorsAccounts = async(req,res)=>{
 

@@ -156,4 +156,4 @@ favorite: [
     timestamps: true
 });
 
-module.exports = mongoose.model("patients",patientSchema)
+module.exports = mongoose.model("Patient",patientSchema)
