@@ -39,6 +39,7 @@ const CheckoutSession = async (req, res) => {
   }
 };
 
+//create Payment
 const createPayment = async(req,res)=>{
   try {
 
@@ -59,11 +60,42 @@ const createPayment = async(req,res)=>{
    return res.json({success: false,message: "Internal server error"})
   }
 };
-
+//Get all payments
 const getPayments = async(req,res)=>{
   try {
     const payments = await Payment.find().populate('patient', '_id firstName lastName picture_url');
     res.json({success: true, total_payments: payments.length,payments_list: payments});
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+
+//delete payment
+const deletePayment = async(req,res)=>{
+  try {
+    
+    const result = await Payment.findByIdAndDelete(req.body.paymentId);
+    if (!result) {
+      return res.json({success: false, message: 'Payment not found'});
+    }
+    res.json({success: true, message: 'payment deleted successfully'});
+    
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+//Get payment details by id
+const paymentDetails = async(req,res)=>{
+  try {
+    
+    const result = await Payment.findById(req.body.paymentId);
+    if (!result) {
+      return res.json({success: false, message: 'Payment not found'});
+    }
+    res.json({success: true, payment_details: result});
+    
   } catch (error) {
     console.log(error.message);
     return res.json({success: false, message: "Internal server error"});
@@ -75,5 +107,7 @@ const getPayments = async(req,res)=>{
 module.exports = {
   CheckoutSession,
   createPayment,
-  getPayments
+  getPayments,
+  deletePayment,
+  paymentDetails
 };
