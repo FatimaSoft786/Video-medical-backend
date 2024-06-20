@@ -12,15 +12,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 const paymentModel = require("./Model/Payment")
-const bookingModel = require("./Model/Booking")
+
 
 
 const fileUpload = require("express-fileupload");
 app.use(fileUpload({useTempFiles: true,limits: {fileSize: 500*2024*1024}}))
 app.use("/api/patient",require("./Router/Patient"));
 app.use("/api/doctor",require("./Router/Doctor"));
-app.use("/api/service",require("./Router/Service"));
-app.use("/api/booking", require("./Router/Booking"));
+app.use("/api/specialist",require("./Router/Specialist"));
 app.use("/api/payment",require("./Router/Payments"));
 app.use("/api/favorite",require("./Router/Favorite"));
 app.use("/admin",require("./Router/Admin"));
@@ -50,7 +49,7 @@ app.post(
          await paymentModel.create({
            patientId: paymentIntent.metadata.patientId,
           doctorId: paymentIntent.metadata.doctorId,
-          visit_fee: paymentIntent.metadata.visit_fee,
+          session_fee: paymentIntent.metadata.session_fee,
           service: paymentIntent.metadata.service,
          
          })

@@ -25,8 +25,8 @@ const CheckoutSession = async (req, res) => {
             "patientId": req.body.patientId,
             "doctorId": req.body.doctorId,
             "service": req.body.service,
-            "visit_fee": req.body.price,
-            "paymentStatus": "received",
+            "session_fee": req.body.price,
+            "paymentStatus": "Paid",
             "paymentMode": "card"
           }
         },
@@ -42,8 +42,6 @@ const CheckoutSession = async (req, res) => {
 //create Payment
 const createPayment = async(req,res)=>{
   try {
-
-      
      const admin_amount  = req.body.session_fee * 0.25;
      const doctor_amount = req.body.session_fee - admin_amount;
      const data = await Payment.create({

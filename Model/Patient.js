@@ -21,7 +21,11 @@ otp: {
 },
 role: {
     type: String,
-    default: ""
+    default: "Patient"
+},
+account_status:{
+type: Boolean,
+default: true
 },
 pic_public_id: {
     type: String,

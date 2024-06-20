@@ -9,12 +9,12 @@ router.post("/login",login);
 router.post("/verifyOtp",verifyOtp);
 router.post("/checkEmail",checkEmail);
 router.post("/resetPassword",resetPassword);
-router.post("/like",likeDoctor);
-router.post("/unlike",unlikeDoctor);
-router.post("/uploadData",uploadPatientData);
-router.post("/uploadHistoryPicture",uploadHistoryPicture)
-router.delete("/deletePicture",deletePicture);
-router.delete("/deleteHistoryPicture", deleteHistoryPicture);
-router.post("/likedDoctor",likedDoctorByPatient);
+router.post("/like",fetchUser,likeDoctor);
+router.post("/unlike",fetchUser,unlikeDoctor);
+router.post("/uploadData",fetchUser,uploadPatientData);
+router.post("/uploadHistoryPicture",fetchUser,uploadHistoryPicture)
+router.delete("/deletePicture",fetchUser,deletePicture);
+router.delete("/deleteHistoryPicture",fetchUser,deleteHistoryPicture);
+router.post("/likedDoctor",fetchUser,likedDoctorByPatient);
 router.get("/getuser",fetchUser,fetchProfile);
 module.exports = router;

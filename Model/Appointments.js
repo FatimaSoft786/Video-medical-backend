@@ -21,8 +21,9 @@ const appointmentSchema = new mongoose.Schema({
     session_fee:{
         type: Number
     },
-    earning: {
-        type: Number
+    doctor_percentage_amount: {
+        type: Number,
+        default:0
     },
     appointment_status: {
         type: String,
@@ -32,7 +33,9 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         default: "Unpaid"
     },
-},{
-    timestamps: true
+    date: {
+        type: Date,
+        default: Date.now
+    }
 });
 module.exports = mongoose.model("Appointment",appointmentSchema);

@@ -1,14 +1,10 @@
 const mongoose = require("mongoose")
 const favoriteSchema = new mongoose.Schema({
- patientId: {
-         type: String
+ patient: {
+         type: mongoose.Schema.Types.ObjectId, ref: 'Patient'
     },
-    doctorId: {
-       type: String
-    },
-    liked: {
-        type: Boolean,
-        default: false
+    doctor: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Doctor'
     }
 
 });

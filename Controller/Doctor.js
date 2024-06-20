@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs")
 const Doctor = require("../Model/Doctor");
-
+const Appointments = require("../Model/Appointments");
 const nodemailer = require("nodemailer");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
@@ -357,6 +357,59 @@ const deleteDoctor = async(req,res)=>{
     return res.json({success: false, message: "Internal server error"});
   }
 }
+//fetch all appointments
+const fetchAppointmentByDoctor = async(req,res)=>{
+  try {
+
+    const data = await Appointments.find({patient: req.body.doctor});
+    if(!data){
+      return res.json({success: false, message: "Data not found"})
+    }else{
+     const appointments = await Appointments.find().populate('patient', '_id firstName lastName picture_url');
+    
+      const adminAmountsDict = {};
+    appointments.forEach(appointment => {
+    adminAmountsDict[appointment._id] = appointment.doctor_percentage_amount || 0;
+  });
+  let totalDoctorAmount = 0;
+  appointments.forEach(appointment => {
+    const adminAmount = adminAmountsDict[appointment._id] || 0;
+    totalDoctorAmount += adminAmount;
+  });
+  res.json({success: true, total_earning: totalDoctorAmount,total_appointments: appointments.length,total_patients: appointments.length,appointments_list: appointments}); 
+     
+    
+    }
+
+   
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+//Upcoming appointments
+const upcomingAppointments = async(req,res)=>{
+  try {
+ 
+    const appointments = await Appointments.find({doctor: req.body.doctorId});
+    if(!appointments){
+      return res.json({success: false, message: "No appointments found"})
+    }else{
+ const today = moment().startOf('day').format('DD MMMM YYYY');
+ console.log(today);
+    // const todayDate = moment(today, 'DD MMMM YYYY').toDate();
+    // console.log(todayDate);
+    const upcomingAppointments = await Appointments.find({
+      appointment_date: { $gte: today }
+    });
+    res.json({success: true, message: upcomingAppointments});
+    }
+
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
 
 
 module.exports = {
@@ -372,5 +425,7 @@ module.exports = {
     addReview,
     getReviews,
     deleteReview,
-    deleteDoctor
+    deleteDoctor,
+    fetchAppointmentByDoctor,
+    upcomingAppointments
 }

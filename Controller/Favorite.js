@@ -1,39 +1,54 @@
 const Favorite = require("../Model/Favorite");
-const doctor = require("../Model/Doctor");
 const Fav = async(req,res)=>{
       try {
   const {patientId,doctorId} = req.body;
-
-   const existingFavorite = await Favorite.findOne({patientId,doctorId});
+   const existingFavorite = await Favorite.findOne({patient: patientId,doctor: doctorId});
    if(existingFavorite){
-    return res.status(400).json({error: true, message: "Doctor already exist"})
+    return res.json({success:false, message: "Doctor already is in favorite"})
    }
 
   const data = await Favorite.create({
-       "doctorId": doctorId,
-        "patientId": patientId,
-         "liked": true
+       "doctor": doctorId,
+        "patient": patientId
   });
-      res.status(200).json({error: false, message: data}); 
+      res.json({success: true, message: data}); 
     } catch (error) {
-        res.status(500).json({error: true,message: error.message});
+        console.log(error.message);
+      return  res.json({success: true,message: "Internal server error"});
     }
 }
 
 
-const fetch = async(req,res)=>{
+const fetchFavorites = async(req,res)=>{
     try {
 
-        const data = await Favorite.find({patientId: {$in: req.body.Id}});
-        res.status(200).json({error: false, favorite: data.doctorId});
+          const data = await Favorite.find({patient: req.body.patient});
+    if(!data){
+      return res.json({success: false, message: "Data not found"})
+    }else{
+     const favorites = await Favorite.find().populate('doctor', '_id firstName lastName picture_url slots reviews');
+    res.json({success: true, total_favorites: favorites.length,favorites_list: favorites}); 
+    }
         
     } catch (error) {
-        res.status(500).json({error: true, message: error.message});
+        console.log(error.message);
+      return  res.json({success:false, message: error.message});
     }
 }
 
+const deleteFavorite = async(req,res)=>{
+    try {
+    const data = await Favorite.findByIdAndDelete({_id: req.body.id});
+    res.json({success: true, message: "Doctor removed from favorite successfully"});
+        
+    } catch (error) {
+        console.log(error.message);
+        return res.json({success: false, message: "Internal server error"});
+    }
+}
 
 module.exports ={
     Fav,
-    fetch
+    fetchFavorites,
+    deleteFavorite
 };
