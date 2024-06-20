@@ -4,14 +4,14 @@ var fetchUser = require('../middleware/fetchUser');
 const router = express.Router();
 router.post('/signup', signup)
 .post('/login', login)
-.get("/total",fetchUser,countData)
+.get("/total",countData)
 .post('/checkEmail',checkEmail)
 .post('/verifyOtp',verifyOtp)
 .post('/resetPassword',resetPassword)
-.get("/doctorsList",fetchUser,doctors)
-.get("/patientsList",fetchUser,patients)
-.post('/accountApproval/:id',fetchUser,doctorsAccounts)
-.get('/fetchDetails',fetchUser,fetchUserByID);
+.get("/doctorsList",doctors)
+.get("/patientsList",patients)
+.post('/accountApproval/:id',doctorsAccounts)
+.get('/fetchDetails',fetchUserByID);
 
 
 
