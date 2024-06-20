@@ -23,7 +23,7 @@ const createAppointment = async(req,res)=>{
 //fetch all appointments
 const fetchAppointments = async(req,res)=>{
   try {
-    const appointments = await Appointment.find().populate('doctor', '_id firstName lastName picture_url').populate('patient', '_id firstName lastName picture_url');
+    const appointments = await Appointment.find().populate('doctor', '_id firstName lastName default_picture_url specialist').populate('patient', '_id firstName lastName picture_url');
     res.json({success: true, appointments: appointments}); 
   } catch (error) {
     console.log(error.message);
