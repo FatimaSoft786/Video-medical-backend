@@ -103,8 +103,6 @@ const resetPassword = async(req,res)=>{
     }
 }
 
-
-
 const signup = async(req,res)=>{
 
     const { email, password } = req.body;
@@ -269,7 +267,23 @@ const user = await Doctors.findByIdAndUpdate(id, req.body, { new: true });
     res.json({success: false,message: "Internal Serve error"});
   }
  }
+//reviews list
+ const reviews = async(req,res)=>{
+  try {
+    const doctors = await Doctors.find().select('reviews');
+     if(doctors){
+ const reviews = doctors.map(doctor => doctor.reviews).flat();
+     res.json({success: true, reviews_list: reviews});
+     }else{
+      res.json({success: false, message: "No data found"});
+     }
+    
 
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: 'Internal Server error'});
+  }
+ }
 
 
 module.exports = {
@@ -281,6 +295,7 @@ module.exports = {
   resetPassword,
   doctors,
   patients,
+  reviews,
   doctorsAccounts,
   countData
 }
