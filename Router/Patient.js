@@ -12,7 +12,7 @@ router.post("/checkEmail",checkEmail);
 router.post("/resetPassword",resetPassword);
 router.post("/like",fetchUser,likeDoctor);
 router.post("/unlike",fetchUser,unlikeDoctor);
-router.post("/uploadData",fetchUser,uploadPatientData);
+router.post("/editProfile",fetchUser,uploadPatientData);
 router.post("/uploadHistoryPicture",fetchUser,uploadHistoryPicture)
 router.delete("/deletePicture",fetchUser,deletePicture);
 router.delete("/deleteHistoryPicture",fetchUser,deleteHistoryPicture);

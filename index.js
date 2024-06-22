@@ -24,6 +24,7 @@ app.use("/api/payment",require("./Router/Payments"));
 app.use("/api/favorite",require("./Router/Favorite"));
 app.use("/admin",require("./Router/Admin"));
 app.use("/api/appointment", require("./Router/Appointment"));
+app.use("/api/auth/",require("./Router/User"));
 
 
 

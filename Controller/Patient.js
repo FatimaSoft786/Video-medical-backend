@@ -20,22 +20,6 @@ let transporter = nodemailer.createTransport({
     }
 })
 
-
-
-//access token
-function generateAccessToken(user) {
-    return jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '1m' });
-}
-
-//refresh access token
-function generateRefreshToken(user) {
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-    refreshTokens.push(refreshToken);
-    return refreshToken;
-}
-
-
-
 function generateOTP() {
   const otp = Math.floor(100000 + Math.random() * 900000);
   return otp.toString();
@@ -79,6 +63,8 @@ const register = async(req,res)=>{
        return res.json({success:false,message: "Internal server error"});
     }
 };
+
+
 //patient login
 const login = async(req,res)=>{
     const { email, password } = req.body;
@@ -92,24 +78,29 @@ const login = async(req,res)=>{
     if (!passwordCompare) {
       return res.json({ success:false, message: "Please try to login with correct password" });
     }
-     if(user.account_verified === false){
-      return res.json({success: false, message: "Please first do verify your account", account_verified: user.account_verified});
-     }
-    const data = {
-      user: {
-        id: user.id
+
+      if(user.role === "Patient"){
+
       }
-    }
-       const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
-       res.json({success: true, message:"user logged in  successfully",account_verified: user.account_verified,accessToken});
+
+
+    //  if(user.account_verified === false){
+    //   return res.json({success: false, message: "Please first do verify your account", account_verified: user.account_verified});
+    //  }
+    // const data = {
+    //   user: {
+    //     id: user.id
+    //   }
+    // }
+    //    const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY,{expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
+    //    const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION;
+    //    res.json({success: true, message:"user logged in  successfully",account_verified: user.account_verified,accessToken,expiresIn});
    
   } catch (error) {
      console.error(error.message);
      return res.json({success: false, message: 'Internal server error'});
   }
 };
-
-
 
 function isOTPExpired(createdAt){
     const expirationTime = moment(createdAt).add(10,"minutes")
@@ -137,10 +128,9 @@ const verifyPatient = async(req,res)=>{
         id: patient.id
       }
     }
-    const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
-       //const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-       res.json({success: true, message:"user verified successfully",account_verified:true,accessToken});
-
+     const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY,{expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
+       const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION;
+       res.json({success: true, message:"account verified successfully",account_verified: user.account_verified,accessToken,expiresIn});
             }
         }
         
@@ -265,7 +255,7 @@ const unlikeDoctor = async(req,res)=>{
         res.status(500).json({error: true,message: error.message});
     }
 };
-
+//edit profile
 const uploadPatientData = async(req,res)=>{
   try { 
   console.log(req.body);
