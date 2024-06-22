@@ -22,13 +22,25 @@ let transporter = nodemailer.createTransport({
 
 
 
+//access token
+function generateAccessToken(user) {
+    return jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '1m' });
+}
+
+//refresh access token
+function generateRefreshToken(user) {
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+    refreshTokens.push(refreshToken);
+    return refreshToken;
+}
+
 
 
 function generateOTP() {
   const otp = Math.floor(100000 + Math.random() * 900000);
   return otp.toString();
 }
-
+//patient register
 const register = async(req,res)=>{
     try {
         let check = await Patient.findOne({email: req.body.email});
@@ -37,58 +49,59 @@ const register = async(req,res)=>{
         }else{
             const salt = await bcrypt.genSalt(10);
             const securePass = await bcrypt.hash(req.body.password,salt)
-         //   const otp = generateOTP();
+            const otp = generateOTP();
             check = await Patient.create({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
                 password: securePass,
                 phoneNumber: req.body.phoneNumber,
-              //  otp: otp,
+                otp: otp,
                 role: "Patient"
             });
-            res.json({success: true, message: "you are register successfully"});
-          //   let mailOption = {
-          //       from: process.env.SMTP_MAIL,
-          //       to: req.body.email,
-          //       subject: "Otp verification",
-          //       text: `Your otp is: ${otp} will expire after 10 minutes`
-          //   };
-          //   transporter.sendMail(mailOption,function(error){
-          // if(error){
-          //  return  res.json({success:false,message: error})
-          // }else{
-          //   res.json({success: true,message: "Please check your email code has be sent on the email."})
-          // }
-          //   });
+          let mailOption = {
+                from: process.env.SMTP_MAIL,
+                to: req.body.email,
+                subject: "Otp verification",
+                text: `Your otp is: ${otp} will expire after 10 minutes`
+            };
+            transporter.sendMail(mailOption,function(error){
+          if(error){
+            console.log(error.message);
+          return  res.json({success:false, message: "Error in google server"})
+          }else{
+            res.json({success:true, message: "Please check your email code has been sent."})
+          }
+            });   
         }
-        
     } catch (error) {
       console.log(error.message);
        return res.json({success:false,message: "Internal server error"});
     }
 };
-
+//patient login
 const login = async(req,res)=>{
     const { email, password } = req.body;
   try {
     let user = await Patient.findOne({ email });
     if (!user) {
-      return res.json({success: false, error: "Please try to login with correct email" });
+      return res.json({success: false, message: "Please try to login with correct email" });
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
-      return res.json({ success:false, error: "Please try to login with correct password" });
+      return res.json({ success:false, message: "Please try to login with correct password" });
     }
-
+     if(user.account_verified === false){
+      return res.json({success: false, message: "Please first do verify your account", account_verified: user.account_verified});
+     }
     const data = {
       user: {
         id: user.id
       }
     }
-       const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '15h' });
-       res.json({success: true, message:"user logged in  successfully",token});
+       const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
+       res.json({success: true, message:"user logged in  successfully",account_verified: user.account_verified,accessToken});
    
   } catch (error) {
      console.error(error.message);
@@ -96,27 +109,38 @@ const login = async(req,res)=>{
   }
 };
 
+
+
 function isOTPExpired(createdAt){
     const expirationTime = moment(createdAt).add(10,"minutes")
     return moment()>expirationTime;
 }
-
-const verifyOtp = async(req,res)=>{
+// verify patient
+const verifyPatient = async(req,res)=>{
     try {
       console.log(req.body);
-        const user = await Patient.findOne({otp: req.body.otp});
-        if(!user){
+        let patient = await Patient.findOne({otp: req.body.otp});
+        if(!patient){
           return res.json({success:false, message: "Code not found"})
         }else{
- const isExpired = isOTPExpired(user.updatedAt);
+ const isExpired = isOTPExpired(patient.updatedAt);
             if(isExpired){
                  res.json({success:false, message: "Your otp is expired"})
             }else{
-                const data = await Patient.findByIdAndUpdate(
-                    {_id: user._id},
+                const patientData = await Patient.findByIdAndUpdate(
+                    {_id: patient._id},
                     {$set: {otp: "", account_verified: true}},
-                    {new: true});
-                    res.json({success:true, message: "Your otp is verified", user: data._id});
+                    {new: true}).select("-password");
+      
+    const data = {
+      patient: {
+        id: patient.id
+      }
+    }
+    const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
+       //const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+       res.json({success: true, message:"user verified successfully",account_verified:true,accessToken});
+
             }
         }
         
@@ -125,7 +149,7 @@ const verifyOtp = async(req,res)=>{
        return res.json({success:false, message: error.message})
     }
 };
-
+//patient check email
 const checkEmail = async(req,res)=>{
     try {
      const user = await Patient.findOne({email: req.body.email});
@@ -156,7 +180,7 @@ const checkEmail = async(req,res)=>{
        return res.json({success:false, message: 'Internal server error'})
     }
 }
-
+//reset password
 const resetPassword = async(req,res)=>{
     try {
         const data = await Patient.findOne({ _id: req.body.id });
@@ -174,6 +198,30 @@ const resetPassword = async(req,res)=>{
        return res.json({success:false, message: 'Internal server error'})
     }
 }
+//verify otp code
+const verifyOtp = async(req,res)=>{
+    try {
+    
+        let user = await Patient.findOne({otp: req.body.otp});
+        if(!user){
+         return  res.json({success:false, message: "code not found"})
+        }else{
+      const isExpired = isOTPExpired(user.updatedAt);
+            if(isExpired){
+                return res.json({success: false, message: "Your otp is expired"})
+            }else{
+                const data = await Patient.findByIdAndUpdate(
+                    {_id: user._id},
+                    {$set: {otp: ""}},
+                    {new: true});
+                    res.json({success: true, message:data._id});
+            }
+        }
+        
+    } catch (error) {
+       return res.json({success:false, message: 'Internal server error'})
+    }
+};
 
 const likeDoctor = async(req,res)=>{
     try {
@@ -435,6 +483,7 @@ const likedDoctorByPatient = async(req,res)=>{
 module.exports = {
     register,
     login,
+    verifyPatient,
     verifyOtp,
     checkEmail,
     resetPassword,

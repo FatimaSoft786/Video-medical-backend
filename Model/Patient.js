@@ -23,10 +23,6 @@ role: {
     type: String,
     default: "Patient"
 },
-account_status:{
-type: Boolean,
-default: true
-},
 pic_public_id: {
     type: String,
     default: ""
@@ -34,6 +30,10 @@ pic_public_id: {
 picture_url: {
     type: String,
     default: "https://res.cloudinary.com/duhiildi0/image/upload/v1717492663/user_mse9as.png"
+},
+default_picture_url: {
+  type: String,
+  default: "https://res.cloudinary.com/duhiildi0/image/upload/v1717492663/user_mse9as.png"
 },
 dob: {
     type: String,
