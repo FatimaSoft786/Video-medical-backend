@@ -294,7 +294,58 @@ const user = await Doctors.findByIdAndUpdate(id, req.body, { new: true });
     return res.json({success: false, message: 'Internal Server error'});
   }
  }
-
+// approval request for the account accept or declined
+const approvalRequest = async(req,res)=>{
+  try {
+     const {id,status} = req.body;
+         const doctor = await Doctors.findById({_id: id});
+    if(status === true){
+      const doctorData = await Doctors.findByIdAndUpdate(
+      { _id: doctor._id },
+      { $set: { account_approved: true } },
+      { new: true }
+    );
+  
+    let mailOption = {
+                from: process.env.SMTP_MAIL,
+                to: doctor.email,
+                subject: "Account approved",
+                text: `Congratulations!! this is the official email y the admin your account is approved and now you can login the and your default password is Test@12345 and please further reset your password.`
+            };
+            transporter.sendMail(mailOption,function(error){
+          if(error){
+            return res.json({success: true, message: error})
+          }else{
+           res.json({success: false, message: "Email sent to the doctor email"})
+          }
+            });   
+    }else{
+ const doctorData = await Doctors.findByIdAndUpdate(
+      { _id: doctor._id },
+      { $set: { account_approved: false, reason_account_declined: "Your profile is not satisfied" } },
+      { new: true }
+    );
+  
+    let mailOption = {
+                from: process.env.SMTP_MAIL,
+                to: doctor.email,
+                subject: "Account Declined",
+                text: `Sad!! this is the official email y the admin your account is declined and you can contact again with the official email.`
+            };
+            transporter.sendMail(mailOption,function(error){
+          if(error){
+            return res.json({success: true, message: error})
+          }else{
+           res.json({success: false, message: "Email sent to the doctor email"})
+          }
+            }); 
+    }
+    
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
 
 module.exports = {
   signup,
@@ -308,5 +359,6 @@ module.exports = {
   reviews,
   doctorsAccounts,
   countData,
-  fetchDoctorByID
+  fetchDoctorByID,
+  approvalRequest
 }

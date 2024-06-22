@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup,login,fetchUserByID,verifyOtp,checkEmail,resetPassword,doctors,patients,doctorsAccounts,countData,reviews,fetchDoctorByID} = require('../Controller/Admin');
+const { signup,login,fetchUserByID,verifyOtp,checkEmail,resetPassword,doctors,patients,doctorsAccounts,countData,reviews,fetchDoctorByID,approvalRequest} = require('../Controller/Admin');
 var fetchUser = require('../middleware/fetchUser');
 const router = express.Router();
 router.post('/signup', signup)
@@ -13,6 +13,7 @@ router.post('/signup', signup)
 .post('/accountApproval/:id',doctorsAccounts)
 .get('/getReviews',reviews)
 .post("/fetchDoctorById",fetchDoctorByID)
+.post("/accountApproval",approvalRequest)
 .get('/fetchDetails',fetchUserByID);
 
 
