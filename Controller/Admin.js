@@ -4,8 +4,6 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const moment = require("moment");
 const User = require("../Model/User");
-
-const appointments = require("../Model/Appointments");
 const Appointments = require("../Model/Appointments");
 const Payments = require("../Model/Payment");
 
@@ -333,6 +331,17 @@ const approvalRequest = async(req,res)=>{
   }
 }
 
+//Get all transactions
+const getTransactions = async(req,res)=>{
+  try {
+    const payments = await Payments.find();
+    res.json({success: true, total_payments: payments.length,payments_list: payments});
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+
 module.exports = {
   signup,
   login,
@@ -345,5 +354,6 @@ module.exports = {
   doctorsAccounts,
   countData,
   fetchDoctorByID,
-  approvalRequest
+  approvalRequest,
+  getTransactions
 }
