@@ -222,7 +222,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
  const patients = async(req,res)=>{
   try {
     
-    const patients = await User.find({role: req.body.role}, '-password');
+    const patients = await User.find({role: req.params.role}, '-password');
      res.json({success: true,total_patients: patients.length, patients_list: patients});
 
   } catch (error) {
