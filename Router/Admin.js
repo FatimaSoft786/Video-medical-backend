@@ -8,13 +8,13 @@ router.post('/signup', signup)
 .post('/checkEmail',checkEmail)
 .post('/verifyOtp',verifyOtp)
 .post('/resetPassword',resetPassword)
-.post("/doctorsList",doctors)
-.post("/patientsList",patients)
-.post('/accountApproval/:id',doctorsAccounts)
-.post("/fetchDoctorById",fetchDoctorByID)
-.post("/accountApproval",approvalRequest)
-.get("/transactionsList",getTransactions)
-.get('/fetchDetails',fetchUserByID);
+.post("/doctorsList",fetchUser,doctors)
+.post("/patientsList",fetchUser,patients)
+.post('/accountApproval/:id',fetchUser,doctorsAccounts)
+.post("/fetchDoctorById",fetchUser,fetchDoctorByID)
+.post("/accountApproval",fetchUser,approvalRequest)
+.get("/transactionsList",fetchUser,getTransactions)
+.get('/fetchDetails',fetchUser,fetchUserByID);
 
 
 
