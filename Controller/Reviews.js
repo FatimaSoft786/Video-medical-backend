@@ -26,7 +26,7 @@ const addReview = async(req,res)=>{
 //reviews list
  const reviews = async(req,res)=>{
   try {
-    const review = await Review.find().populate('doctor','_id firstName lastName default_picture_url specialist').populate('patient','_id firstName lastName picture_url');
+    const review = await Review.find().populate('doctor','_id firstName lastName default_picture_url picture_url specialist').populate('patient','_id firstName lastName default_picture_url picture_url');
      if(review){
      res.json({success: true, reviews_list: review});
      }else{
