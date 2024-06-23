@@ -4,7 +4,7 @@ var fetchUser = require('../middleware/fetchUser');
 const router = express.Router();
 router.post('/signup', signup)
 .post('/login', login)
-.get("/total",countData)
+.post("/total",fetchUser,countData)
 .post('/checkEmail',checkEmail)
 .post('/verifyOtp',verifyOtp)
 .post('/resetPassword',resetPassword)

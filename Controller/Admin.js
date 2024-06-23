@@ -184,8 +184,8 @@ const { email, password } = req.body;
 //patient doctors,appointments count
 const countData = async(req,res)=>{
   try {
-const doctors = await User.find();
-const patient = await User.find();
+const doctor = await User.find({role: req.body.role});
+const patient = await User.find({role: req.body.role1});
 const appointments = await Appointments.find();
 const payments = await Payments.find();
 const adminAmountsDict = {};
@@ -198,7 +198,7 @@ const adminAmountsDict = {};
     totalAdminAmount += adminAmount;
    // console.log(`Payment ID: ${payment._id}, Admin Percentage Amount: ${adminAmount}`);
   });
-res.json({success: true, total_doctors: doctors.length,total_patients: patients.length, total_appointments: appointments.length,admin_revenue: totalAdminAmount});    
+res.json({success: true, total_doctors: doctor.length,total_patients: patient.length, total_appointments: appointments.length,admin_revenue: totalAdminAmount});    
   } catch (error) {
      console.log(error.message);
     return res.json({success: false, message: 'Internal Server error'});
