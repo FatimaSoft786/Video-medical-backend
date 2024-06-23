@@ -387,29 +387,7 @@ const fetchAppointmentByDoctor = async(req,res)=>{
     return res.json({success: false, message: "Internal server error"});
   }
 }
-//Upcoming appointments
-const upcomingAppointments = async(req,res)=>{
-  try {
- 
-    const appointments = await Appointments.find({doctor: req.body.doctorId});
-    if(!appointments){
-      return res.json({success: false, message: "No appointments found"})
-    }else{
- const today = moment().startOf('day').format('DD MMMM YYYY');
- console.log(today);
-    // const todayDate = moment(today, 'DD MMMM YYYY').toDate();
-    // console.log(todayDate);
-    const upcomingAppointments = await Appointments.find({
-      appointment_date: { $gte: today }
-    });
-    res.json({success: true, message: upcomingAppointments});
-    }
 
-  } catch (error) {
-    console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
-  }
-}
 
 
 module.exports = {
@@ -426,6 +404,5 @@ module.exports = {
     getReviews,
     deleteReview,
     deleteDoctor,
-    fetchAppointmentByDoctor,
-    upcomingAppointments
+    fetchAppointmentByDoctor
 }
