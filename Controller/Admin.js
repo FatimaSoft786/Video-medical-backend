@@ -210,7 +210,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
 //doctors list
  const doctors = async(req,res)=>{
   try {
-    const doctors = await User.find({}, '-password');
+    const doctors = await User.find({role: req.body.role}, '-password');
      res.json({success: true,total_doctors: doctors.length, doctors_list: doctors});
 
   } catch (error) {
@@ -222,7 +222,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
  const patients = async(req,res)=>{
   try {
     
-    const patients = await User.find({}, '-password');
+    const patients = await User.find({role: req.body.role}, '-password');
      res.json({success: true,total_patients: patients.length, patients_list: patients});
 
   } catch (error) {
