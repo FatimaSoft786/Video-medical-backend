@@ -184,6 +184,12 @@ const userSchema = new Schema(
     },
     education: {
         type: String
+    },
+    university: {
+      type: String
+    },
+    experience:{
+      type: String
     }
   },
   {

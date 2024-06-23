@@ -92,7 +92,10 @@ const register = async(req,res)=>{
                 clinic_hospital_address: req.body.clinic_hospital_address,
                 about: req.body.about_info,
                 doctor_cv_url: result.secure_url,
-                cv_public_id: result.public_id
+                cv_public_id: result.public_id,
+                "education": req.body.education,
+                "university": req.body.university,
+                "experience": req.body.experience
             });
             res.json({success:true,message: "Your form request has been sent to the admin please wait for the account approval",account_approved: doctor_info.account_approved,role: doctor_info.role});
           }
