@@ -22,7 +22,7 @@ const Fav = async(req,res)=>{
 const fetchFavorites = async(req,res)=>{
     try {
 
-          const data = await Favorite.find({patient: req.body.patient});
+          const data = await Favorite.find({patient: req.body.patientId});
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{

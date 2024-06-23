@@ -1,12 +1,12 @@
 const mongoose = require("mongoose")
 const paymentSchema = new mongoose.Schema({
     patient: {
-        type: mongoose.Schema.Types.ObjectId, "ref": "Patient"
+        type: mongoose.Schema.Types.ObjectId, "ref": "User"
     },
     doctor: {
-        type: mongoose.Schema.Types.ObjectId, "ref": "Doctor"
+        type: mongoose.Schema.Types.ObjectId, "ref": "User"
     },
-    session_fee: {
+    fee: {
         type: Number
     },
     admin_percentage_amount: {
@@ -19,7 +19,7 @@ const paymentSchema = new mongoose.Schema({
     },
     payment_status: {
         type: "String",
-        default: "Unpaid"
+        default: "Paid"
     }
 },
 {

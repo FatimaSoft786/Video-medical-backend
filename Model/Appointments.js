@@ -1,19 +1,16 @@
 const mongoose = require("mongoose");
 const appointmentSchema = new mongoose.Schema({
     doctor: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Doctor'
+        type: mongoose.Schema.Types.ObjectId, ref: 'User'
     },
     patient: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Patient'
+        type: mongoose.Schema.Types.ObjectId, ref: 'User'
     },
     appointment_date: {
         type: String
     },
     appointment_time: {
    type: String
-    },
-    appointment_status:{
-        type: String,
     },
     reason_for_cancel: {
         type: String
@@ -31,7 +28,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     payment_status: {
         type: String,
-        default: "Unpaid"
+        default: "Paid"
     },
     date: {
         type: Date,

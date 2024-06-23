@@ -3,7 +3,6 @@ const User = require("../Model/User");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
-const path = require('path');
 //cloudinary
 const cloudinary = require("cloudinary").v2;
   cloudinary.config({
@@ -283,7 +282,7 @@ if (!req?.files?.profile)
     console.log(result)
     if(result){
         const data = await User.findByIdAndUpdate(
-            {_id: req.body.patientId},
+            {_id: req.body.Id},
             {$set: {pic_public_id: result.public_id,picture_url: result.secure_url}},
             {new: true})
             res.json({success: true, message: "Image uploaded on the cloud"})
@@ -340,6 +339,81 @@ const fetchProfile = async(req,res)=>{
   }
 
 };
+//patient medical history form 
+const patientMedicalHistory = async(req,res)=>{
+    try {
+        const user =  await User.findOne({_id: req.body.patientId});
+        if(user){
+            const data = await User.findByIdAndUpdate(
+        { _id: req.body.patientId },
+        {
+          $set: {
+        "good_health": req.body.good_health,
+        "serious_illness": req.body.serious_illness,
+        "serious_illness_description" : req.body.serious_illness_description,
+        "past_surgery": req.body.past_surgery,
+        "past_surgery_description": req.body.past_surgery_description,
+        "current_medication": req.body.current_medication,
+        "current_medication_description": req.body.current_medication_description,
+        "heart_disease": req.body.heart_disease,
+        "blood_pressure": req.body.blood_pressure,
+        "allergies": req.body.allergies,
+        "allergies_description": req.body.allergies_description,
+        "diabetes": req.body.diabetes,
+        "kidney_disease": req.body.kidney_disease,
+        "thyroid": req.body.thyroid,
+        "stomach_disease": req.body.stomach_disease,
+        "digestive_disease": req.body.digestive_disease,
+        "digestive_description": req.body.digestive_description,
+        "lung_disease": req.body.lung_disease,
+        "lungs_description": req.body.lungs_description,
+        "venereal": req.body.venereal,
+        "nervous": req.body.nervous,
+        "hormone": req.body.hormone,
+        "any_illness": req.body.any_illness,
+        "any_illness_description": req.body.any_illness_description,
+        "smoke": req.body.smoke,
+        "alcohol": req.body.alcohol,
+        "aids": req.body.aids,
+        "usual_medicine": req.body.usual_medicine,
+        "usual_medicine_description": req.body.usual_medicine_description,
+          },
+        },
+        { new: true }
+      );
+       res.json({success: true, message: "Medical History updated"})
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+        return res.json({success: false, message: "Internal server error"});
+    }
+}
+//upload doctor signature 
+ const uploadSignaturePicture = async(req,res)=>{
+  try { 
+if (!req?.files?.signature)
+      return res.json({success: false, message: "Please upload an image"})
+    const file = req.files.signature;
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      public_id: file.name,
+      resource_type: "image",
+      folder: "signature",
+    });
+    console.log(result)
+    if(result){
+        const data = await User.findByIdAndUpdate(
+            {_id: req.body.doctorId},
+            {$set: {signature_public_id: result.public_id,signature_url: result.secure_url}},
+            {new: true})
+            res.json({success: true, message: "Image uploaded on the cloud"})
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.json({success: false,message: "Internal server error"});
+  }
+};
+
 
 
 module.exports = {
@@ -352,5 +426,7 @@ module.exports = {
     editPatientProfile,
     uploadProfilePicture,
     deleteProfilePicture,
-    fetchProfile
+    fetchProfile,
+    patientMedicalHistory,
+    uploadSignaturePicture
 }

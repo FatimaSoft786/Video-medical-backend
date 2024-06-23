@@ -42,12 +42,12 @@ const CheckoutSession = async (req, res) => {
 //create Payment
 const createPayment = async(req,res)=>{
   try {
-     const admin_amount  = req.body.session_fee * 0.25;
-     const doctor_amount = req.body.session_fee - admin_amount;
+     const admin_amount  = req.body.fee * 0.25;
+     const doctor_amount = req.body.fee - admin_amount;
      const data = await Payment.create({
       patient: req.body.patientId,
       doctor: req.body.doctorId,
-      session_fee: req.body.session_fee,
+      fee: req.body.fee,
       admin_percentage_amount: admin_amount,
       doctor_percentage_amount: doctor_amount
     })
@@ -61,7 +61,7 @@ const createPayment = async(req,res)=>{
 //Get all payments
 const getPayments = async(req,res)=>{
   try {
-    const payments = await Payment.find().populate('patient', '_id firstName lastName picture_url');
+    const payments = await Payment.find({patient: req.body.patientId}).populate('doctor', '_id firstName lastName picture_url specialist');
     res.json({success: true, total_payments: payments.length,payments_list: payments});
   } catch (error) {
     console.log(error.message);

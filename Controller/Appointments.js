@@ -1,6 +1,6 @@
 const Appointment = require("../Model/Appointments")
-const Doctor = require("../Model/Doctor");
-const Patient = require("../Model/Patient");
+const User = require("../Model/User")
+
 
 //create Appointment
 const createAppointment = async(req,res)=>{
@@ -87,7 +87,7 @@ const fetchAppointmentByPatient = async(req,res)=>{
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{
-     const appointments = await Appointment.find().populate('doctor', '_id firstName lastName picture_url').populate('patient', '_id firstName lastName picture_url');
+     const appointments = await Appointment.find().populate('doctor', '_id firstName lastName picture_url location');
     res.json({success: true, appointments: appointments}); 
     }
 
@@ -97,6 +97,44 @@ const fetchAppointmentByPatient = async(req,res)=>{
     return res.json({success: false, message: "Internal server error"});
   }
 }
+// fetch appointments by doctorId
+const fetchAppointmentByDoctor = async(req,res)=>{
+  try {
+    const data = await Appointment.find({doctor: req.body.doctor});
+    if(!data){
+      return res.json({success: false, message: "Data not found"})
+    }else{
+     const appointments = await Appointment.find().populate('patient', '_id firstName lastName picture_url postal_code sex dob location phoneNumber');
+    
+      const adminAmountsDict = {};
+    appointments.forEach(appointment => {
+    adminAmountsDict[appointment._id] = appointment.doctor_percentage_amount || 0;
+  });
+  let totalDoctorAmount = 0;
+  appointments.forEach(appointment => {
+    const adminAmount = adminAmountsDict[appointment._id] || 0;
+    totalDoctorAmount += adminAmount;
+  });
+  res.json({success: true, total_earning: totalDoctorAmount,total_appointments: appointments.length,total_patients: appointments.length,appointments_list: appointments}); 
+    }
+
+   
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+//view patient profile By doctor
+const fetchPatientProfile = async(req,res)=>{
+   try {
+    const user = await User.findOne({_id: req.body.patientId}).select("-password")
+    res.json({success: true, user_details: user })
+  } catch (error) {
+    console.error(error.message);
+  return  res.json({success: false, message:"Internal Server Error"});
+  }
+
+};
 
 
 
@@ -106,5 +144,7 @@ module.exports = {
     changeAppointmentStatus,
     cancelAppointment,
     fetchAppointmentByPatient,
+    fetchAppointmentByDoctor,
+    fetchPatientProfile
    
 }

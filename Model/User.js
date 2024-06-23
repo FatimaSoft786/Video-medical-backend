@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const userSchema = new mongoose.Schema(
+const Schema = mongoose.Schema;
+const userSchema = new Schema(
   {
     firstName: {
       type: String,
@@ -172,6 +173,18 @@ const userSchema = new mongoose.Schema(
     usual_medicine_description: {
       type: String,
     },
+    visit: {
+        type: Number
+    },
+    followUp: {
+        type: Number
+    },
+    currency: {
+        type: String
+    },
+    education: {
+        type: String
+    }
   },
   {
     timestamps: true,
