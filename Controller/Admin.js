@@ -3,8 +3,8 @@ const Admin = require("../Model/Admin");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const moment = require("moment");
-const Doctors = require("../Model/Doctor");
-const Patients = require("../Model/Patient");
+const User = require("../Model/User");
+
 const appointments = require("../Model/Appointments");
 const Appointments = require("../Model/Appointments");
 const Payments = require("../Model/Payment");
@@ -174,7 +174,7 @@ const { email, password } = req.body;
  const fetchDoctorByID = async(req,res)=>{
   try {
 
-    const doctor = await Doctors.findById(req.body.id).select("-password");
+    const doctor = await User.findById(req.body.id).select("-password");
     res.json({success: true, message: doctor});
     
   } catch (error) {
@@ -186,8 +186,8 @@ const { email, password } = req.body;
 //patient doctors,appointments count
 const countData = async(req,res)=>{
   try {
-const doctors = await Doctors.find();
-const patient = await Patients.find();
+const doctors = await User.find();
+const patient = await User.find();
 const appointments = await Appointments.find();
 const payments = await Payments.find();
 const adminAmountsDict = {};
@@ -210,7 +210,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
 //doctors list
  const doctors = async(req,res)=>{
   try {
-    const doctors = await Doctors.find({}, '-password');
+    const doctors = await User.find({}, '-password');
      res.json({success: true,total_doctors: doctors.length, doctors_list: doctors});
 
   } catch (error) {
@@ -222,7 +222,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
  const patients = async(req,res)=>{
   try {
     
-    const patients = await Patients.find({}, '-password');
+    const patients = await User.find({}, '-password');
      res.json({success: true,total_patients: patients.length, patients_list: patients});
 
   } catch (error) {
@@ -238,7 +238,7 @@ res.json({success: true, total_doctors: doctors.length,total_patients: patients.
   try {
       
      if(req.body.account_approved === true){
-const user = await Doctors.findByIdAndUpdate(id, req.body, { new: true });
+const user = await User.findByIdAndUpdate(id, req.body, { new: true });
      if(user){
  let mailOption = {
                 from: process.env.SMTP_MAIL,
@@ -255,7 +255,7 @@ const user = await Doctors.findByIdAndUpdate(id, req.body, { new: true });
             }); 
      }
      }else{
-      const user = await Doctors.findByIdAndUpdate(id, req.body, { new: true });
+      const user = await User.findByIdAndUpdate(id, req.body, { new: true });
      if(user){
  let mailOption = {
                 from: process.env.SMTP_MAIL,
@@ -279,28 +279,14 @@ const user = await Doctors.findByIdAndUpdate(id, req.body, { new: true });
     res.json({success: false,message: "Internal Serve error"});
   }
  }
-//reviews list
- const reviews = async(req,res)=>{
-  try {
-    const doctors = await Doctors.find().select('reviews');
-     if(doctors){
-     const reviews = doctors.map(doctor => doctor.reviews).flat();
-     res.json({success: true, reviews_list: reviews});
-     }else{
-      res.json({success: false, message: "No data found"});
-     }
-  } catch (error) {
-    console.log(error.message);
-    return res.json({success: false, message: 'Internal Server error'});
-  }
- }
+
 // approval request for the account accept or declined
 const approvalRequest = async(req,res)=>{
   try {
      const {id,status} = req.body;
-         const doctor = await Doctors.findById({_id: id});
+         const doctor = await User.findById({_id: id});
     if(status === true){
-      const doctorData = await Doctors.findByIdAndUpdate(
+      const doctorData = await User.findByIdAndUpdate(
       { _id: doctor._id },
       { $set: { account_approved: true } },
       { new: true }
@@ -320,7 +306,7 @@ const approvalRequest = async(req,res)=>{
           }
             });   
     }else{
- const doctorData = await Doctors.findByIdAndUpdate(
+ const doctorData = await User.findByIdAndUpdate(
       { _id: doctor._id },
       { $set: { account_approved: false, reason_account_declined: "Your profile is not satisfied" } },
       { new: true }
@@ -356,7 +342,6 @@ module.exports = {
   resetPassword,
   doctors,
   patients,
-  reviews,
   doctorsAccounts,
   countData,
   fetchDoctorByID,

@@ -430,6 +430,22 @@ const getAllDoctors = async(req,res)=>{
   }
 }
 
+// delete specialists
+const deleteDoctor = async(req,res)=>{
+  try {
+    
+    const result = await User.findByIdAndDelete(req.body.doctorId);
+    if (!result) {
+      return res.json({success: false, message: 'Doctor not found'});
+    }
+    res.json({success: true, message: 'Doctor deleted successfully'});
+    
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+
 
 
 module.exports = {
