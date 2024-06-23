@@ -26,7 +26,7 @@ const fetchFavorites = async(req,res)=>{
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{
-     const favorites = await Favorite.find().populate('doctor', '_id firstName lastName picture_url slots reviews');
+     const favorites = await Favorite.find().populate('doctor', '_id firstName lastName picture_url location slots reviews');
     res.json({success: true, total_favorites: favorites.length,favorites_list: favorites}); 
     }
         

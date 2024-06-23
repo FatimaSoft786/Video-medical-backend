@@ -300,7 +300,7 @@ const approvalRequest = async(req,res)=>{
           if(error){
             return res.json({success: true, message: error})
           }else{
-           res.json({success: false, message: "Email sent to the doctor email"})
+           res.json({success: true, message: "Email sent to the doctor email"})
           }
             });   
     }else{
@@ -320,7 +320,7 @@ const approvalRequest = async(req,res)=>{
           if(error){
             return res.json({success: true, message: error})
           }else{
-           res.json({success: false, message: "Email sent to the doctor email"})
+           res.json({success: true, message: "Email sent to the doctor email"})
           }
             }); 
     }
