@@ -334,7 +334,7 @@ const approvalRequest = async(req,res)=>{
 //Get all transactions
 const getTransactions = async(req,res)=>{
   try {
-    const payments = await Payments.find();
+    const payments = await Payments.find().populate('patient', '_id firstName lastName picture_url default_picture_url');
     res.json({success: true, total_payments: payments.length,payments_list: payments});
   } catch (error) {
     console.log(error.message);
