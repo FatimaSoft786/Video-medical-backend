@@ -416,6 +416,19 @@ if (!req?.files?.signature)
     res.json({success: false,message: "Internal server error"});
   }
 };
+//patient dashboard
+const getAllDoctors = async(req,res)=>{
+  try {
+     const doc = await User.find({role: req.body.role});
+   if(doc){
+      res.json({success: true, doctors_list: doc})
+   }
+    
+  } catch (error) {
+    console.log(error.message);
+    res.json({success: false, message: "Internal server error"});
+  }
+}
 
 
 
@@ -431,5 +444,6 @@ module.exports = {
     deleteProfilePicture,
     fetchProfile,
     patientMedicalHistory,
-    uploadSignaturePicture
+    uploadSignaturePicture,
+    getAllDoctors
 }

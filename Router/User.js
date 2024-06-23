@@ -1,5 +1,5 @@
 const express = require("express");
-const {register,login,verifyUser,verifyOtp,checkEmail,resetPassword,editPatientProfile,uploadProfilePicture,deleteProfilePicture,fetchProfile,patientMedicalHistory,uploadSignaturePicture} = require("../Controller/User");
+const {register,login,verifyUser,verifyOtp,checkEmail,resetPassword,editPatientProfile,uploadProfilePicture,deleteProfilePicture,fetchProfile,patientMedicalHistory,uploadSignaturePicture,getAllDoctors} = require("../Controller/User");
 const router = express.Router();
  var fetchUser = require('../middleware/fetchUser');
 router.post("/signup",register);
@@ -14,6 +14,7 @@ router.post("/signup",register);
  router.delete("/deletePicture",fetchUser,deleteProfilePicture);
  router.post("/patientMedicalHistory",fetchUser,patientMedicalHistory);
  router.get("/userDetails",fetchUser,fetchProfile);
+ router.get("/doctorsList",fetchUser,getAllDoctors);
 
  
 module.exports = router;
