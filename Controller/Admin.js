@@ -136,12 +136,12 @@ const { email, password } = req.body;
   try {
     let user = await Admin.findOne({ email });
     if (!user) {
-      return res.json({success: false, error: "Please try to login with correct email" });
+      return res.json({success: false, message: "Please try to login with correct email" });
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
-      return res.json({ success:false, error: "Please try to login with correct password" });
+      return res.json({ success:false, message: "Please try to login with correct password" });
     }
 
     const data = {
