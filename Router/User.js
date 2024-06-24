@@ -1,5 +1,5 @@
 const express = require("express");
-const {register,login,verifyUser,verifyOtp,checkEmail,resetPassword,editPatientProfile,uploadProfilePicture,deleteProfilePicture,fetchProfile,patientMedicalHistory,uploadSignaturePicture,getAllDoctors,postFavorite,getFavorites,removeFavorite,addReviews,addSlots,getSlots,doctorProfile} = require("../Controller/User");
+const {register,login,verifyUser,verifyOtp,checkEmail,resetPassword,editPatientProfile,uploadProfilePicture,deleteProfilePicture,fetchProfile,patientMedicalHistory,uploadSignaturePicture,getAllDoctors,postFavorite,getFavorites,removeFavorite,addReviews,addSlots,getSlots,doctorProfile,patientProfile} = require("../Controller/User");
 const router = express.Router();
  var fetchUser = require('../middleware/fetchUser');
 router.post("/signup",register);
@@ -22,6 +22,7 @@ router.post("/signup",register);
  router.post("/addSlots",fetchUser,addSlots);
  router.get("/getSlots",fetchUser,getSlots);
  router.get("/getDoctorProfile",fetchUser,doctorProfile);
+ router.get("/getPatientProfile",fetchUser,patientProfile);
 
  
 module.exports = router;

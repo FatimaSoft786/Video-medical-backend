@@ -97,7 +97,21 @@ const register = async(req,res)=>{
                 "university": req.body.university,
                 "experience": req.body.experience
             });
-            res.json({success:true,message: "Your form request has been sent to the admin please wait for the account approval",account_approved: doctor_info.account_approved,role: doctor_info.role});
+
+             let mailOption = {
+                from: process.env.SMTP_MAIL,
+                to: "shahzaibmehmood65@gmail.com",
+                subject: "Doctor form request for the account approval",
+                text: `Hi admin!! this the Dr.${req.body.firstName}${req.body.lastName} and he is specialist in the ${req.body.specialist} so look his account on the admin portal thanks.`
+            };
+            transporter.sendMail(mailOption,function(error){
+          if(error){
+          return  res.json({success:false, message: error})
+          }else{
+            //account_approved: doctor_info.account_approved,role: doctor_info.role
+          res.json({success:true,message: "Your form request has been sent to the admin please wait for the account approval"});
+          }
+            }); 
           }
         }
  }
@@ -601,7 +615,16 @@ const addSlots = async(req,res)=>{
     console.error(error.message);
   return  res.json({success: false, message:"Internal Server Error"});
   }
-
+};
+// get patient details
+const patientProfile = async(req,res)=>{
+   try {
+    const user = await User.findOne({_id: req.body.patientId}).select("-password")
+    res.json({success: true, patient_details: user })
+  } catch (error) {
+    console.error(error.message);
+  return  res.json({success: false, message:"Internal Server Error"});
+  }
 };
 
 
@@ -627,5 +650,6 @@ module.exports = {
     addReviews,
     addSlots,
     getSlots,
-    doctorProfile
+    doctorProfile,
+    patientProfile
 }
