@@ -61,7 +61,7 @@ const createPayment = async(req,res)=>{
 //Get all payments
 const getPayments = async(req,res)=>{
   try {
-    const payments = await Payment.find({patient: req.body.patientId}).populate('doctor', '_id firstName lastName picture_url specialist');
+    const payments = await Payment.find({patient: req.body.patientId}).populate('doctor', '_id firstName lastName picture_url specialist').populate('patient', '_id firstName lastName');
     res.json({success: true, total_payments: payments.length,payments_list: payments});
   } catch (error) {
     console.log(error.message);

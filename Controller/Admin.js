@@ -334,13 +334,14 @@ const approvalRequest = async(req,res)=>{
 //Get all transactions
 const getTransactions = async(req,res)=>{
   try {
-    const payments = await Payments.find().populate('patient', '_id firstName lastName picture_url default_picture_url');
+    const payments = await Payments.find().populate('patient', '_id firstName lastName picture_url default_picture_url').populate('doctor','_id firstName lastName');
     res.json({success: true, total_payments: payments.length,payments_list: payments});
   } catch (error) {
     console.log(error.message);
     return res.json({success: false, message: "Internal server error"});
   }
 }
+
 
 module.exports = {
   signup,

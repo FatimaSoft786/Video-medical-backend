@@ -19,7 +19,6 @@ app.use("/admin",require("./Router/Admin"));
 app.use("/api/appointment", require("./Router/Appointment"));
 app.use("/api/user/",require("./Router/User"));
 app.use("/api/review/",require("./Router/Reviews"));
-app.use("/api/slots/",require("./Router/Slots"));
 app.use("/api/payment",require("./Router/Payments"));
 
 

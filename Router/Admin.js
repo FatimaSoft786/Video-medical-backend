@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup,login,fetchUserByID,verifyOtp,checkEmail,resetPassword,doctors,patients,doctorsAccounts,countData,fetchDoctorByID,approvalRequest,getTransactions} = require('../Controller/Admin');
+const { signup,login,fetchUserByID,verifyOtp,checkEmail,resetPassword,doctors,patients,doctorsAccounts,countData,fetchDoctorByID,approvalRequest,getTransactions,getAllReviews} = require('../Controller/Admin');
 var fetchUser = require('../middleware/fetchUser');
 const router = express.Router();
 router.post('/signup', signup)
