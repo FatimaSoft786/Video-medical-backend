@@ -595,8 +595,8 @@ const addSlots = async(req,res)=>{
  //get doctor details
  const doctorProfile = async(req,res)=>{
    try {
-    const user = await User.findByOne({_id: req.body.doctorId}).select("-password")
-    res.json({success: true, user_details: user })
+    const user = await User.findOne({_id: req.body.doctorId}).select("-password")
+    res.json({success: true, doctor_details: user })
   } catch (error) {
     console.error(error.message);
   return  res.json({success: false, message:"Internal Server Error"});
