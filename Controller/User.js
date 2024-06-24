@@ -429,7 +429,6 @@ const getAllDoctors = async(req,res)=>{
     res.json({success: false, message: "Internal server error"});
   }
 }
-
 // delete specialists
 const deleteDoctor = async(req,res)=>{
   try {
@@ -445,6 +444,155 @@ const deleteDoctor = async(req,res)=>{
     return res.json({success: false, message: "Internal server error"});
   }
 }
+//post favorite
+const postFavorite = async(req,res)=>{
+  try { 
+  const data = await User.findById({_id: req.body.doctorId});
+    if (!data) {
+      return res.json({success: false, message: "User not found"})
+    }
+    const favExists = data.favorites.some(fav => fav.doctorId.equals(req.body.doctorId));
+    if (favExists) {
+      return res.json({success: false, message: "Favorite by this user already exists"});
+    }
+    data.favorites.push(req.body);
+    await data.save();
+    return res.json({success: true, message: "Favorite saved successfully"});
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: error});
+  }
+};
+// get favorites
+const getFavorites = async(req,res)=>{
+  try {
+     const favorites = await User.find({role: req.body.role}).select("-password");
+    res.json({success: true, message: favorites});
+    } catch (error) {
+        console.log(error.message);
+      return  res.json({success:false, message: error.message});
+    }
+}
+//remove favorite
+const removeFavorite =async(req,res)=>{
+  try {
+        const {doctorId} = req.body;
+       const doc = await User.findByIdAndUpdate(
+      doctorId,
+      { $unset: { favorites: "" } },
+      { new: true }
+    ).populate('favorites');
+    if (doc) {
+      res.json({success: true, message: doc});
+    } else {
+      res.json({success: false, message: "Favorites not found"});
+    }
+    
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success:false, message: "Internal server error"})
+  }
+}
+// add reviews
+const addReviews = async(req,res)=>{
+  try {
+     const data = await User.findOne({_id: req.body.doctorId});
+    if (!data) {
+      return res.json({success: false, message: "User not found"})
+    }
+    const reviewExists = data.reviews.some(review => review.patientId.equals(req.body.patientId));
+    if (reviewExists) {
+       averageRating(req.body.doctorId)
+      return res.json({success: false, message: "Review by this user already exists"});
+    }
+    data.reviews.push(req.body);
+   const doc = await data.save();
+   if(doc){
+    averageRating(req.body.doctorId)
+   }
+    return res.json({success: true, message: "Review saved successfully"}); 
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+// delete review 
+const deleteReview = async(req,res)=>{
+  try {
+      const {doctorId, reviewId} = req.body;
+     const user = await User.findByIdAndUpdate(
+      doctorId,
+      { $pull: { reviews: { _id: reviewId } } },
+      { new: true }
+    );
+    if (user) {
+      res.json({success: true, message: user.reviews});
+    } else {
+      res.json({success: false, message: "Review not found"});
+    }
+    
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
+// average rating and total reviews
+const averageRating = async(doctorId)=>{
+    
+  try {
+    const users = await User.findOne({_id: doctorId });
+const reviewCount = users.reviews.length;
+const totalRating = users.reviews.reduce((sum, review) => sum + review.rating, 0);
+   await User.findByIdAndUpdate(
+    doctorId,
+    {$set: {total_reviews: reviewCount, average_rating: totalRating}},
+    {new: true}
+   )
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+  
+}
+//add slots
+const addSlots = async(req,res)=>{
+  try { 
+    const doc = await User.findOne({_id: req.body.doctorId});
+    const {time,date} = req.body;
+     if(doc){
+    const user = await User.findByIdAndUpdate(
+      req.body.doctorId,
+      { $push: { slots: { time, date } } },
+      { new: true }
+    );
+    user.visit = req.body.visit,
+    user.followUp = req.body.followUp,
+    user.currency = req.body.currency
+      const data = await user.save();
+      if(data){
+        return res.json({success: true, message: data});
+      }
+     }
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+};
+//Get slots
+ const getSlots = async(req,res)=>{
+  try {
+    const slot = await User.findOne({_id: req.body.doctorId});
+     if(slot){
+     res.json({success: true, appointment_details: slot});
+     }else{
+      res.json({success: false, message: "No data found"});
+     }
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: 'Internal Server error'});
+  }
+ }
+
 
 
 
@@ -461,5 +609,11 @@ module.exports = {
     fetchProfile,
     patientMedicalHistory,
     uploadSignaturePicture,
-    getAllDoctors
+    getAllDoctors,
+    postFavorite,
+    getFavorites,
+    removeFavorite,
+    addReviews,
+    addSlots,
+    getSlots
 }

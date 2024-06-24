@@ -1,5 +1,40 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+
+const favoriteSchema = new Schema({
+   patientId: {
+         type: mongoose.Schema.Types.ObjectId, ref: 'User'
+    },
+    doctorId: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User'
+    }
+},{
+  timestamps: true
+});
+const reviewSchema = new Schema({
+patientId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+review: {
+    type: String
+},
+rating: {
+    type: Number
+},
+},{
+    timestamps: true
+});
+const slotSchema = new Schema({
+     time: {
+    type: [String], // Array of times as strings
+    required: true
+  },
+  date: {
+    type: String, // Date object
+    required: true
+  },
+  doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+});
+
 const userSchema = new Schema(
   {
     firstName: {
@@ -174,22 +209,39 @@ const userSchema = new Schema(
       type: String,
     },
     visit: {
-        type: Number
+        type: Number,
+        default: 0
     },
     followUp: {
-        type: Number
+        type: Number,
+        default: 0
     },
     currency: {
-        type: String
+        type: String,
+        default: "$"
     },
     education: {
-        type: String
+        type: String,
+        default: ""
     },
     university: {
-      type: String
+      type: String,
+      default: ""
     },
     experience:{
-      type: String
+      type: String,
+      default: ""
+    },
+    favorites: [favoriteSchema],
+    reviews: [reviewSchema],
+    slots: [slotSchema],
+    total_reviews:{
+      type: Number,
+      default:0
+    },
+    average_rating: {
+      type: Number,
+      default: 0
     }
   },
   {

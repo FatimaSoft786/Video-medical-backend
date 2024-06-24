@@ -10,11 +10,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-
-const paymentModel = require("./Model/Payment")
-
-
-
 const fileUpload = require("express-fileupload");
 app.use(fileUpload({useTempFiles: true,limits: {fileSize: 500*2024*1024}}))
 
