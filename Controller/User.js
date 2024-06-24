@@ -592,6 +592,17 @@ const addSlots = async(req,res)=>{
     return res.json({success: false, message: 'Internal Server error'});
   }
  }
+ //get doctor details
+ const doctorProfile = async(req,res)=>{
+   try {
+    const user = await User.findByOne({_id: req.body.doctorId}).select("-password")
+    res.json({success: true, user_details: user })
+  } catch (error) {
+    console.error(error.message);
+  return  res.json({success: false, message:"Internal Server Error"});
+  }
+
+};
 
 
 
@@ -615,5 +626,6 @@ module.exports = {
     removeFavorite,
     addReviews,
     addSlots,
-    getSlots
+    getSlots,
+    doctorProfile
 }
