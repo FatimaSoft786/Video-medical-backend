@@ -232,6 +232,9 @@ const userSchema = new Schema(
       type: String,
       default: ""
     },
+    paymentId: {
+      type: {type: mongoose.Schema.Types.ObjectId, ref: 'Payment'}
+    },
     favorites: [favoriteSchema],
     reviews: [reviewSchema],
     slots: [slotSchema],
