@@ -306,7 +306,7 @@ const approvalRequest = async(req,res)=>{
     }else{
  const doctorData = await User.findByIdAndUpdate(
       { _id: doctor._id },
-      { $set: { account_approved: false, reason_account_declined: "Your profile is not satisfied" } },
+      { $set: { account_declined: true } },
       { new: true }
     );
   

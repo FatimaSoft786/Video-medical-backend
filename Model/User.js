@@ -88,6 +88,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    account_declined: {
+      type: Boolean,
+      default: false,
+    },
     studies_start_year: {
       type: String,
     },
@@ -110,9 +114,6 @@ const userSchema = new Schema(
       type: String,
     },
     about: {
-      type: String,
-    },
-    reason_account_declined: {
       type: String,
     },
     doctor_cv_url: {
