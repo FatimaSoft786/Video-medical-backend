@@ -13,16 +13,16 @@ router.post("/signup",register);
  router.post("/uploadProfilePicture",fetchUser,uploadProfilePicture);
  router.delete("/deletePicture",fetchUser,deleteProfilePicture);
  router.post("/patientMedicalHistory",fetchUser,patientMedicalHistory);
- router.get("/userDetails",fetchUser,fetchProfile);
- router.get("/doctorsList",fetchUser,getAllDoctors);
+ router.post("/userDetails",fetchUser,fetchProfile);
+ router.post("/doctorsList",fetchUser,getAllDoctors);
  router.post("/like",fetchUser,postFavorite);
- router.get("/favoritesByPatient",fetchUser,getFavorites);
+ router.post("/favoritesByPatient",fetchUser,getFavorites);
  router.delete("/deleteFavoriteByPatient",fetchUser,removeFavorite);
  router.post("/addReview",fetchUser,addReviews);
  router.post("/addSlots",fetchUser,addSlots);
- router.get("/getSlots",fetchUser,getSlots);
- router.get("/getDoctorProfile",fetchUser,doctorProfile);
- router.get("/getPatientProfile",fetchUser,patientProfile);
+ router.post("/getSlots",fetchUser,getSlots);
+ router.post("/getDoctorProfile",fetchUser,doctorProfile);
+ router.post("/getPatientProfile",fetchUser,patientProfile);
 
  
 module.exports = router;
