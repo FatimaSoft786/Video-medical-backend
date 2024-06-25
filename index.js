@@ -84,9 +84,6 @@ app.post(
    res.send();
   }
 );
-
-
-
 app.use(cors({origin: "*"}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -101,12 +98,7 @@ app.use("/api/user/",require("./Router/User"));
 app.use("/api/review/",require("./Router/Reviews"));
 app.use("/api/payment",require("./Router/Payments"));
 
-
 const Appointment = require("./Model/Appointments")
-
-
-
-
 app.listen(process.env.PORT,()=>{
     console.log("Server is connected with",process.env.PORT);
     connectToMongo();

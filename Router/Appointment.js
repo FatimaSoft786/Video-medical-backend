@@ -5,7 +5,7 @@ var fetchUser = require("../middleware/fetchUser");
 router.post("/createAppointment",fetchUser,createAppointment);
 router.get("/fetchAll",fetchAppointments);
 router.post("/changeAppointmentStatus",changeAppointmentStatus);
-router.post("/cancelAppointment/:id",cancelAppointment);
+router.post("/cancelAppointment",cancelAppointment);
 router.post("/fetchAppointmentByPatient",fetchAppointmentByPatient);
 router.post("/fetchAppointmentByDoctor",fetchAppointmentByDoctor)
 router.get("/viewPatientProfile",fetchUser,fetchPatientProfile);

@@ -1,6 +1,19 @@
 const Appointment = require("../Model/Appointments")
 const User = require("../Model/User")
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+const nodemailer = require("nodemailer");
+
+// mail transporter
+let transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: false,
+    auth:{
+        user: process.env.SMTP_MAIL,
+        pass: process.env.SMTP_PASSWORD
+    }
+});
+//Book appointment
 const BookAppointment = async (req, res) => { 
   try {
     
@@ -39,8 +52,6 @@ const BookAppointment = async (req, res) => {
     res.json({success: false, message: "Internal server error"})
   }
 };
-
-
 //create Appointment
 const createAppointment = async(req,res)=>{
     try {
@@ -74,8 +85,8 @@ const changeAppointmentStatus = async(req,res)=>{
     try {
    const appointment = await Appointment.findOne({_id: req.body.appointmentId});
    if(appointment.appointment_status === 'waiting'){
-    const admin_amount  = appointment.session_fee * 0.25;
-     const doctor_amount = appointment.session_fee - admin_amount;
+    const admin_amount  = appointment.fee * 0.25;
+     const doctor_amount = appointment.fee - admin_amount;
      
      const data = await Appointment.findByIdAndUpdate(
             {_id: req.body.appointmentId},
@@ -91,7 +102,7 @@ const changeAppointmentStatus = async(req,res)=>{
 }
 //cancel appointment
 const cancelAppointment = async(req,res)=>{
-  const appointmentId = req.params.id;
+  const appointmentId = req.body.appointmentId;
    try {
 const appointment = await Appointment.findById(appointmentId);
         if (!appointment) {
@@ -105,8 +116,28 @@ const appointment = await Appointment.findById(appointmentId);
         if (timeDifference > 48) {
             return res.json({success: false, message: 'Cannot cancel an appointment less than 48 hours before the scheduled time' });
         }else{
-        await Appointment.findByIdAndDelete(appointmentId);
-        res.json({success: true, message: 'Appointment cancelled successfully' });
+           const data = await Appointment.findByIdAndUpdate(
+            {_id: appointmentId},
+            {$set: {appointment_status: 'cancelled'}},
+            {new: true});
+
+            const user = await User.findById({_id: appointment.patient})
+
+             let mailOption = {
+                from: process.env.SMTP_MAIL,
+                to: user.email,
+                subject: "Your appointment has been cancelled",
+                text: `Hi,${user.firstName}${user.lastName} this is the confirmation email you have appointment has been cancelled with the doctor.`
+            };
+            transporter.sendMail(mailOption,function(error){
+          if(error){
+          return  res.json({success:false, message: error})
+          }else{
+           console.log("email sent");
+          }
+            }); 
+        
+        res.json({success: true, message: 'Appointment cancelled successfully',data });
         }
 
        
@@ -126,7 +157,7 @@ const fetchAppointmentByPatient = async(req,res)=>{
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{
-     const appointments = await Appointment.find().populate('doctor', '_id firstName lastName picture_url location');
+     const appointments = await Appointment.find().populate('doctor', '_id firstName lastName picture_url specialist total_reviews average_rating favorites location');
     res.json({success: true, appointments: appointments}); 
     }
 
@@ -143,7 +174,7 @@ const fetchAppointmentByDoctor = async(req,res)=>{
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{
-     const appointments = await Appointment.find().populate('patient', '_id firstName lastName picture_url postal_code sex dob location phoneNumber');
+     const appointments = await Appointment.find().populate('patient', '_id firstName lastName picture_url postal_code sex dob location phoneNumber good_health serious_illness serious_illness_description past_surgery past_surgery_description current_medication current_medication_description heart_disease blood_pressure  allergies allergies_description diabetes kidney_disease thyroid stomach_disease  digestive_disease  digestive_description lung_disease lungs_description venereal nervous hormone any_illness any_illness_description smoke alcohol aids usual_medicine usual_medicine_description');
     
       const adminAmountsDict = {};
     appointments.forEach(appointment => {
