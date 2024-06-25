@@ -1,5 +1,44 @@
 const Appointment = require("../Model/Appointments")
 const User = require("../Model/User")
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+const BookAppointment = async (req, res) => { 
+  try {
+    
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: req.body.items.map((item) => {
+          return {
+            price_data: {
+              currency: "eur",
+              product_data: {
+                name: item.name,
+                description: item.description,
+               
+              },
+              unit_amount: item.price * 100,
+            },
+            quantity: item.quantity
+          }
+        }),
+        payment_intent_data: {
+          metadata: {
+            "patient": req.body.patientId,
+            "doctor": req.body.doctorId,
+            "fee": req.body.fee,
+            "appointment_date": req.body.appointment_date,
+            "appointment_time": req.body.appointment_time
+          }
+        },
+        success_url: "http://localhost:3000/success",
+        cancel_url: "http://localhost:3000/cancel"
+      });
+      res.status(200).json({url: session.url})
+  } catch (error) {
+    console.log(error.message);
+    res.json({success: false, message: "Internal server error"})
+  }
+};
 
 
 //create Appointment
@@ -168,6 +207,8 @@ module.exports = {
     cancelAppointment,
     fetchAppointmentByPatient,
     fetchAppointmentByDoctor,
-    fetchPatientProfile
+    fetchPatientProfile,
+    BookAppointment
+
    
 }

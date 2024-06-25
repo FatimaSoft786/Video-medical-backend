@@ -2,27 +2,22 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-app.use(cors({origin: "*"}));
-app.use(express.json());
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 const connectToMongo = require('./db');
 const bodyParser = require("body-parser");
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+const nodemailer = require("nodemailer");
+const userModel = require("./Model/User")
 
-
-const fileUpload = require("express-fileupload");
-app.use(fileUpload({useTempFiles: true,limits: {fileSize: 500*2024*1024}}))
-
-app.use("/api/specialist",require("./Router/Specialist"));
-app.use("/api/favorite",require("./Router/Favorite"));
-app.use("/admin",require("./Router/Admin"));
-app.use("/api/appointment", require("./Router/Appointment"));
-app.use("/api/user/",require("./Router/User"));
-app.use("/api/review/",require("./Router/Reviews"));
-app.use("/api/payment",require("./Router/Payments"));
-
-
-
+// mail transporter
+let transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: false,
+    auth:{
+        user: process.env.SMTP_MAIL,
+        pass: process.env.SMTP_PASSWORD
+    }
+});
 
 const endpointSecret = process.env.ENDPOINT
 app.post(
@@ -34,6 +29,7 @@ app.post(
    try {
      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
    } catch (err) {
+    console.log(err.message);
      res.status(400).send(`Webhook Error: ${err.message}`);
      return;
    }
@@ -41,22 +37,36 @@ app.post(
      case 'charge.succeeded': 
      break;
      case 'payment_intent.succeeded':
+      console.log("working");
        const paymentIntent = event.data.object;
-         await paymentModel.create({
-           patientId: paymentIntent.metadata.patientId,
-          doctorId: paymentIntent.metadata.doctorId,
-          session_fee: paymentIntent.metadata.session_fee,
-          service: paymentIntent.metadata.service,
-         
-         })
-         const post = await bookingModel.findById(
-          paymentIntent.metadata.patientId
+     const data =    await Appointment.create({
+           patient: paymentIntent.metadata.patient,
+          doctor: paymentIntent.metadata.doctor,
+          fee: paymentIntent.metadata.fee,
+          appointment_date: paymentIntent.metadata.appointment_date,
+          appointment_time: paymentIntent.metadata.appointment_time,
+          payment_status: "Paid"
+         });
+          const patient = await userModel.findById(
+          paymentIntent.metadata.patient
         );
-        post.payment_status = "Paid"
-       
-      const data =  await post.save();
+         const doctor = await userModel.findById(
+          paymentIntent.metadata.doctor
+        );
+          let mailOption = {
+                from: process.env.SMTP_MAIL,
+                to: patient.email,
+                subject: "Your appointment has been booked",
+                text: `Hi,${patient.firstName}${patient.lastName} this is the confirmation email you have booked the appointment with the Dr.${doctor.firstName}${doctor.lastName} at this date${paymentIntent.metadata.appointment_date}${paymentIntent.metadata.appointment_time}`
+            };
+            transporter.sendMail(mailOption,function(error){
+          if(error){
+          return  res.json({success:false, message: error})
+          }else{
+           console.log("email sent");
+          }
+            }); 
       console.log(data)
-      // console.log("metadata",paymentIntent.metadata.plan)
        break;
      case 'payment_method.attached':
        const paymentMethod = event.data.object;
@@ -74,6 +84,25 @@ app.post(
    res.send();
   }
 );
+
+
+
+app.use(cors({origin: "*"}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+const fileUpload = require("express-fileupload");
+app.use(fileUpload({useTempFiles: true,limits: {fileSize: 500*2024*1024}}))
+app.use(express.json());
+app.use("/api/specialist",require("./Router/Specialist"));
+app.use("/api/favorite",require("./Router/Favorite"));
+app.use("/admin",require("./Router/Admin"));
+app.use("/api/appointment", require("./Router/Appointment"));
+app.use("/api/user/",require("./Router/User"));
+app.use("/api/review/",require("./Router/Reviews"));
+app.use("/api/payment",require("./Router/Payments"));
+
+
+const Appointment = require("./Model/Appointments")
 
 
 

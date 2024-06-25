@@ -18,8 +18,12 @@ const paymentSchema = new mongoose.Schema({
         default:0
     },
     payment_status: {
-        type: "String",
-        default: "Paid"
+        type: String,
+        default: "Unpaid"
+    },
+    wallet_balance: {
+        type: Number,
+        default: 0
     }
 },
 {

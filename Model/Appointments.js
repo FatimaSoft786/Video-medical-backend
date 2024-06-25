@@ -10,12 +10,17 @@ const appointmentSchema = new mongoose.Schema({
         type: String
     },
     appointment_time: {
-   type: String
+     type: String
     },
-    reason_for_cancel: {
-        type: String
+    appointment_request_approved: {
+        type: Boolean,
+        default: false
     },
-    session_fee:{
+    appointment_request_declined: {
+        type: Boolean,
+        default: false
+    },
+    fee:{
         type: Number
     },
     doctor_percentage_amount: {
@@ -28,7 +33,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     payment_status: {
         type: String,
-        default: "Paid"
+        default: "Unpaid"
     },
     date: {
         type: Date,
