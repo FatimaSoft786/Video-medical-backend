@@ -154,7 +154,7 @@ const appointment = await Appointment.findById(appointmentId);
 const fetchAppointmentByPatient = async(req,res)=>{
   try {
 
-    const data = await Appointment.find({patient: req.body.patient}).populate('doctor', '_id firstName lastName picture_url specialist total_reviews average_rating favorites location');;
+    const data = await Appointment.find({patient: req.body.patient}).populate('doctor', '_id firstName lastName picture_url specialist total_reviews average_rating favorites location').populate('patient', '_id firstName lastName picture_url');
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{
