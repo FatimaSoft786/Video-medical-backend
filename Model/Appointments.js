@@ -38,6 +38,10 @@ const appointmentSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    onGoingCall: {
+        type: String,
+        default: false
     }
 });
 module.exports = mongoose.model("Appointment",appointmentSchema);

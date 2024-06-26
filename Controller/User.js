@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs")
 const User = require("../Model/User");
+const Appointment = require("../Model/Appointments")
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
@@ -627,9 +628,32 @@ const patientProfile = async(req,res)=>{
   }
 };
 
+// doctor dashboard
+const doctorDashboard = async(req,res)=>{
+  try {
+    const {doctorId} = req.body;
+    const doc = await User.findOne({_id: doctorId});
+    if(!doc){
+  return res.json({success: false, message: "Data not found"})
+    }
+    else{
+      const appointments = await Appointment.find({doctor: doctorId}).populate('patient','_id firstName lastName picture_url postal_code sex dob location phoneNumber good_health serious_illness serious_illness_description past_surgery past_surgery_description current_medication current_medication_description heart_disease blood_pressure  allergies allergies_description diabetes kidney_disease thyroid stomach_disease  digestive_disease  digestive_description lung_disease lungs_description venereal nervous hormone any_illness any_illness_description smoke alcohol aids usual_medicine usual_medicine_description')
 
-
-
+        const adminAmountsDict = {};
+    appointments.forEach(appointment => {
+    adminAmountsDict[appointment._id] = appointment.doctor_percentage_amount || 0;
+  });
+  let totalDoctorAmount = 0;
+  appointments.forEach(appointment => {
+    const adminAmount = adminAmountsDict[appointment._id] || 0;
+    totalDoctorAmount += adminAmount;
+  });
+  res.json({success: true, total_earning: totalDoctorAmount,total_appointments: appointments.length,total_patients: appointments.length,appointments_list: appointments}); 
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 module.exports = {
     register,
     login,
@@ -651,5 +675,6 @@ module.exports = {
     addSlots,
     getSlots,
     doctorProfile,
-    patientProfile
+    patientProfile,
+    doctorDashboard
 }

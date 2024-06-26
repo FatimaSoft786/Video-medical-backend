@@ -1,15 +1,17 @@
 const express = require("express");
-const {createAppointment,fetchAppointments,changeAppointmentStatus,cancelAppointment,fetchAppointmentByPatient,fetchAppointmentByDoctor,fetchPatientProfile,BookAppointment} = require("../Controller/Appointments");
+const {createAppointment,fetchAppointments,changeAppointmentStatus,cancelAppointment,fetchAppointmentByPatient,fetchAppointmentByDoctor,fetchPatientProfile,BookAppointment,approvalRequest,upcomingAppointments} = require("../Controller/Appointments");
 const router = express.Router();
 var fetchUser = require("../middleware/fetchUser");
-router.post("/createAppointment",fetchUser,createAppointment);
 router.get("/fetchAll",fetchAppointments);
-router.post("/changeAppointmentStatus",changeAppointmentStatus);
-router.post("/cancelAppointment",cancelAppointment);
-router.post("/fetchAppointmentByPatient",fetchAppointmentByPatient);
-router.post("/fetchAppointmentByDoctor",fetchAppointmentByDoctor)
+router.post("/changeAppointmentStatus",fetchUser,changeAppointmentStatus);
+router.post("/cancelAppointment",fetchUser,cancelAppointment);
+router.post("/fetchAppointmentByPatient",fetchUser,fetchAppointmentByPatient);
+router.post("/fetchAppointmentByDoctor",fetchUser,fetchAppointmentByDoctor)
 router.get("/viewPatientProfile",fetchUser,fetchPatientProfile);
-router.post("/BookAppointment",BookAppointment);
+router.post("/BookAppointment",fetchUser,BookAppointment);
+router.post("/ApprovalAppointmentRequest",fetchUser,approvalRequest);
+router.post("/upcomingAppointments",fetchUser,upcomingAppointments);
+
 
 
 
