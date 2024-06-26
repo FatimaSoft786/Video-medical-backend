@@ -23,7 +23,7 @@ router.post("/signup",register);
  router.post("/getSlots",fetchUser,getSlots);
  router.post("/getDoctorProfile",fetchUser,doctorProfile);
  router.post("/getPatientProfile",fetchUser,patientProfile);
- router.post("/doctorDashboard",doctorDashboard);
+ router.post("/doctorDashboard",fetchUser,doctorDashboard);
 
  
 module.exports = router;

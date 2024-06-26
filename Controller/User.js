@@ -145,7 +145,7 @@ const login = async(req,res)=>{
     
        const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
       // const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION;
-       res.json({success: true,account_approved: user.account_approved, role: user.role,accessToken});
+       res.json({success: true,account_approved: user.account_approved, role: user.role,accessToken,id:user._id});
    
   } catch (error) {
      console.error(error.message);
