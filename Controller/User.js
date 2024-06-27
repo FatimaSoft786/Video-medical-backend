@@ -236,7 +236,6 @@ const resetPassword = async(req,res)=>{
 //verify otp code
 const verifyOtp = async(req,res)=>{
     try {
-    
         let user = await User.findOne({otp: req.body.otp});
         if(!user){
          return  res.json({success:false, message: "code not found"})
@@ -247,9 +246,9 @@ const verifyOtp = async(req,res)=>{
             }else{
                 const data = await User.findByIdAndUpdate(
                     {_id: user._id},
-                    {$set: {otp: ""}},
-                    {new: true});
-                    res.json({success: true, message:data._id});
+                    {$set: {otp: "",account_approved: true}},
+                    {new: true}).select("-password");
+                    res.json({success: true, message:data});
             }
         }
         
