@@ -2,11 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+
 const connectToMongo = require('./db');
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const userModel = require("./Model/User")
+app.use(cors({origin: "*"}));
 
 // mail transporter
 let transporter = nodemailer.createTransport({
@@ -27,7 +28,7 @@ app.post(
    const sig = req.headers['stripe-signature'];
    let event;
    try {
-     event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
    } catch (err) {
     console.log(err.message);
      res.status(400).send(`Webhook Error: ${err.message}`);
@@ -84,12 +85,14 @@ app.post(
    res.send();
   }
 );
-app.use(cors({origin: "*"}));
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json());
 const fileUpload = require("express-fileupload");
 app.use(fileUpload({useTempFiles: true,limits: {fileSize: 500*2024*1024}}))
-app.use(express.json());
+
 app.use("/api/specialist",require("./Router/Specialist"));
 app.use("/api/favorite",require("./Router/Favorite"));
 app.use("/admin",require("./Router/Admin"));
