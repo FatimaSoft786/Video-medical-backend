@@ -17,7 +17,10 @@ let transporter = nodemailer.createTransport({
 //Book appointment
 const BookAppointment = async (req, res) => { 
   try {
-    
+  //   const appointment = await Appointment.findOne({doctor: req.body.doctorId});
+  //   if(appointment.appointment_status === 'waiting'){
+  //     return res.json({success: false, message: "Your already have appointment with this doctor"});
+  //  }
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         mode: "payment",

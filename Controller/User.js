@@ -255,6 +255,7 @@ const verifyOtp = async(req,res)=>{
         }
         
     } catch (error) {
+      console.log(error.message);
        return res.json({success:false, message: 'Internal server error'})
     }
 };
