@@ -71,10 +71,8 @@ app.post(
        break;
      case 'payment_method.attached':
        const paymentMethod = event.data.object;
-      
        break;
-       case 'charge.succeeded': 
-       break;
+       
        case 'payment_intent.created':
          break;
      default:

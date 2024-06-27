@@ -47,8 +47,8 @@ const BookAppointment = async (req, res) => {
             "appointment_time": req.body.appointment_time
           }
         },
-        success_url: "http://localhost:3000/success",
-        cancel_url: "http://localhost:3000/cancel"
+        success_url: "http://localhost:3000/en/patient/appointments/success",
+        cancel_url: "http://localhost:3000/en/patient/appointments/failed"
       });
       res.status(200).json({url: session.url})
   } catch (error) {
