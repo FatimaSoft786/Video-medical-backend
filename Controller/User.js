@@ -299,14 +299,14 @@ if (!req?.files?.profile)
       resource_type: "image",
       folder: "profile",
     });
-    res.json({success: true, message: result,id: req.body.Id})
-    // if(result){
-    //     const data = await User.findByIdAndUpdate(
-    //         {_id: req.body.Id},
-    //         {$set: {pic_public_id: result.public_id,picture_url: result.secure_url}},
-    //         {new: true})
-    //         res.json({success: true, message: data})
-    // }
+    //res.json({success: true, message: result,id: req.body.Id})
+    if(result){
+        const data = await User.findByIdAndUpdate(
+            {_id: req.body.Id},
+            {$set: {pic_public_id: result.public_id,picture_url: result.secure_url}},
+            {new: true})
+            res.json({success: true, message: data})
+    }
   } catch (error) {
     console.log(error.message);
     res.json({success: false,message: error.message});
