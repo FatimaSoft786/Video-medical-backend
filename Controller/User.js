@@ -330,7 +330,7 @@ const doc =   await User.findByIdAndUpdate(
     if(doc){
 res.json({
       success: true,
-      message: data,
+      message: doc,
     });
     }else{
         console.log(error.message);
