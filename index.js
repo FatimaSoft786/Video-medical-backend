@@ -120,10 +120,10 @@ function create_cron_date(seconds,minute,hour,day_of_the_month,month,day_of_the_
 //     console.log("Notification sent at", moment().tz("Europe/Rome").format());
 //     // Your notification logic here
 // }
-function sendNotification(appointmentDate) {
-    console.log("Notification sent for appointment on", appointmentDate.format('DD MMMM YYYY'));
-    // Your notification logic here
-}
+// function sendNotification(appointmentDate) {
+//     console.log("Notification sent for appointment on", appointmentDate.format('DD MMMM YYYY'));
+//     // Your notification logic here
+// }
 
 // Schedule the job
 // cron.schedule('* * 7 * * *', () => {
@@ -140,32 +140,32 @@ function sendNotification(appointmentDate) {
 
 // console.log('Cron job scheduled to run at 7 AM Italy time.');
 
-function scheduleNotification(appointmentDateStr) {
-    // Parse the appointment date
-    const appointmentDate = moment.tz(appointmentDateStr, 'DD MMMM YYYY', 'Europe/Rome');
+// function scheduleNotification(appointmentDateStr) {
+//     // Parse the appointment date
+//     const appointmentDate = moment.tz(appointmentDateStr, 'DD MMMM YYYY', 'Europe/Rome');
 
-    // Calculate the notification time (one day before the appointment)
-    const notificationDate = appointmentDate.clone().subtract(1, 'day').set({ hour: 8, minute: 0, second: 0, millisecond: 0 });
+//     // Calculate the notification time (one day before the appointment)
+//     const notificationDate = appointmentDate.clone().subtract(1, 'day').set({ hour: 8, minute: 0, second: 0, millisecond: 0 });
 
-    // Check if the notification date is in the future
-    if (notificationDate.isBefore(moment().tz('Europe/Rome'))) {
-        console.log('Notification date is in the past. Skipping scheduling.');
-        return;
-    }
+//     // Check if the notification date is in the future
+//     if (notificationDate.isBefore(moment().tz('Europe/Rome'))) {
+//         console.log('Notification date is in the past. Skipping scheduling.');
+//         return;
+//     }
 
-    // Calculate the cron expression
-    const cronExpression = `${notificationDate.second()} ${notificationDate.minute()} ${notificationDate.hour()} ${notificationDate.date()} ${notificationDate.month() + 1} *`;
+//     // Calculate the cron expression
+//     const cronExpression = `${notificationDate.second()} ${notificationDate.minute()} ${notificationDate.hour()} ${notificationDate.date()} ${notificationDate.month() + 1} *`;
 
-    // Schedule the cron job
-    cron.schedule(cronExpression, () => {
-        sendNotification(appointmentDate);
-    }, {
-        timezone: 'Europe/Rome'
-    });
+//     // Schedule the cron job
+//     cron.schedule(cronExpression, () => {
+//         sendNotification(appointmentDate);
+//     }, {
+//         timezone: 'Europe/Rome'
+//     });
 
-    console.log('Cron job scheduled for', notificationDate.format('DD MMMM YYYY HH:mm:ss'), 'Italy time.');
-}
-scheduleNotification('29 June 2024');
+//     console.log('Cron job scheduled for', notificationDate.format('DD MMMM YYYY HH:mm:ss'), 'Italy time.');
+// }
+// scheduleNotification('29 June 2024');
 
 
 app.listen(process.env.PORT,()=>{

@@ -305,7 +305,7 @@ if (!req?.files?.profile)
             {_id: req.body.Id},
             {$set: {pic_public_id: result.public_id,picture_url: result.secure_url}},
             {new: true})
-            res.json({success: true, message: "Image uploaded on the cloud"})
+            res.json({success: true, message: data})
     }
   } catch (error) {
     console.log(error.message);
@@ -330,7 +330,7 @@ const doc =   await User.findByIdAndUpdate(
     if(doc){
 res.json({
       success: true,
-      message: "Your image has been deleted from the cloud",
+      message: data,
     });
     }else{
         console.log(error.message);
