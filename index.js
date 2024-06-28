@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-
+const cron = require('node-cron');
+const moment = require('moment-timezone');
 const connectToMongo = require('./db');
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
@@ -58,7 +59,8 @@ app.post(
                 from: process.env.SMTP_MAIL,
                 to: patient.email,
                 subject: "Your appointment has been booked",
-                text: `Hi,${patient.firstName}${patient.lastName} this is the confirmation email you have booked the appointment with the Dr.${doctor.firstName}${doctor.lastName} at this date${paymentIntent.metadata.appointment_date}${paymentIntent.metadata.appointment_time}`
+                text: `Object: Conferma Appuntamento Video MedicoGentile ${patient.firstName}${patient.lastName}${process.env.BOOKED_APPOINTMENT}`
+               // text: `Hi,${patient.firstName}${patient.lastName} this is the confirmation email you have booked the appointment with the Dr.${doctor.firstName}${doctor.lastName} at this date${paymentIntent.metadata.appointment_date}${paymentIntent.metadata.appointment_time}`
             };
             transporter.sendMail(mailOption,function(error){
           if(error){
@@ -100,6 +102,72 @@ app.use("/api/review/",require("./Router/Reviews"));
 app.use("/api/payment",require("./Router/Payments"));
 
 const Appointment = require("./Model/Appointments")
+
+function create_cron_date(seconds,minute,hour,day_of_the_month,month,day_of_the_week){
+  return seconds + " "+minute+" "+hour+" "+day_of_the_month+" "+month+" "+day_of_the_week;
+}
+//console.log(create_cron_date(0,0,0,2,0,0));
+// cron.schedule(
+//   create_cron_date('*/5','*','*','*','*','*'),
+//   function(){
+//     console.log('its time to launch')
+//   }
+// );
+
+
+// Function to send notification
+// function sendNotification() {
+//     console.log("Notification sent at", moment().tz("Europe/Rome").format());
+//     // Your notification logic here
+// }
+function sendNotification(appointmentDate) {
+    console.log("Notification sent for appointment on", appointmentDate.format('DD MMMM YYYY'));
+    // Your notification logic here
+}
+
+// Schedule the job
+// cron.schedule('* * 7 * * *', () => {
+//     // Get the current time in Italy
+//     const nowInItaly = moment().tz('Europe/Rome');
+
+//     // Check if the current hour in Italy is 9 AM
+//     if (nowInItaly.hours() === 7) {
+//         sendNotification();
+//     }
+// }, {
+//     timezone: 'Europe/Rome'
+// });
+
+// console.log('Cron job scheduled to run at 7 AM Italy time.');
+
+function scheduleNotification(appointmentDateStr) {
+    // Parse the appointment date
+    const appointmentDate = moment.tz(appointmentDateStr, 'DD MMMM YYYY', 'Europe/Rome');
+
+    // Calculate the notification time (one day before the appointment)
+    const notificationDate = appointmentDate.clone().subtract(1, 'day').set({ hour: 8, minute: 0, second: 0, millisecond: 0 });
+
+    // Check if the notification date is in the future
+    if (notificationDate.isBefore(moment().tz('Europe/Rome'))) {
+        console.log('Notification date is in the past. Skipping scheduling.');
+        return;
+    }
+
+    // Calculate the cron expression
+    const cronExpression = `${notificationDate.second()} ${notificationDate.minute()} ${notificationDate.hour()} ${notificationDate.date()} ${notificationDate.month() + 1} *`;
+
+    // Schedule the cron job
+    cron.schedule(cronExpression, () => {
+        sendNotification(appointmentDate);
+    }, {
+        timezone: 'Europe/Rome'
+    });
+
+    console.log('Cron job scheduled for', notificationDate.format('DD MMMM YYYY HH:mm:ss'), 'Italy time.');
+}
+scheduleNotification('29 June 2024');
+
+
 app.listen(process.env.PORT,()=>{
     console.log("Server is connected with",process.env.PORT);
     connectToMongo();

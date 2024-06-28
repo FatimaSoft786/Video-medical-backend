@@ -42,6 +42,7 @@ const appointmentSchema = new mongoose.Schema({
     onGoingCall: {
         type: String,
         default: false
-    }
+    },
+    notified: { type: Boolean, default: false }
 });
 module.exports = mongoose.model("Appointment",appointmentSchema);
