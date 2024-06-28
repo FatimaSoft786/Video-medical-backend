@@ -315,6 +315,7 @@ if (!req?.files?.profile)
 //delete profile picture
 const deleteProfilePicture = async(req,res)=>{
     try {
+      
         const data = await User.findOne({pic_public_id: req.body.public_id});
         if(!data){
              return res.json({success: false,message: "profile picture does not exist"})
