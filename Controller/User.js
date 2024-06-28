@@ -397,7 +397,7 @@ const patientMedicalHistory = async(req,res)=>{
         },
         { new: true }
       );
-       res.json({success: true, message: data})
+       res.json({success: true, user_details: data})
         }
         
     } catch (error) {
