@@ -11,7 +11,7 @@ router.post("/signup",register);
  router.post("/editPatientProfile",fetchUser,editPatientProfile)
  router.post("/uploadSignature",fetchUser,uploadSignaturePicture);
  router.post("/uploadProfilePicture",fetchUser,uploadProfilePicture);
- router.delete("/deletePicture",fetchUser,deleteProfilePicture);
+ router.delete("/deletePicture",deleteProfilePicture);
  router.post("/patientMedicalHistory",fetchUser,patientMedicalHistory);
  router.post("/userDetails",fetchUser,fetchProfile);
  router.post("/doctorsList",fetchUser,getAllDoctors);
