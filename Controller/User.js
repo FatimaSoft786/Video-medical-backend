@@ -55,7 +55,12 @@ const register = async(req,res)=>{
                 from: process.env.SMTP_MAIL,
                 to: req.body.email,
                 subject: "Otp verification",
-                text: `Your otp is: ${otp} will expire after 10 minutes`
+                text: `Hai richiesto la verifica dell'email. Il tuo codice OTP è ${otp}.
+Scadrà fra 10 minuti. Se non riesci ad inserirlo può richiederne uno nuovo.
+
+Grazie
+Video Medico`
+              //  text: `Your otp is: ${otp} will expire after 10 minutes`
             };
             transporter.sendMail(mailOption,function(error){
           if(error){
@@ -202,7 +207,11 @@ const checkEmail = async(req,res)=>{
                 from: process.env.SMTP_MAIL,
                 to: req.body.email,
                 subject: "Otp verification",
-                text: `Your otp is: ${otp} will expire after 10 minutes`
+                  text: `Hai richiesto la verifica dell'email. Il tuo codice OTP è ${otp}.
+Scadrà fra 10 minuti. Se non riesci ad inserirlo può richiederne uno nuovo.
+
+Grazie
+Video Medico`
             };
             transporter.sendMail(mailOption,function(error){
           if(error){

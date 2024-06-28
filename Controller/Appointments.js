@@ -130,8 +130,8 @@ const appointment = await Appointment.findById(appointmentId);
              let mailOption = {
                 from: process.env.SMTP_MAIL,
                 to: user.email,
-                subject: "Your appointment has been cancelled",
-                text: `Hi,${user.firstName}${user.lastName} this is the confirmation email you have appointment has been cancelled with the doctor.`
+                subject: "Televisita Cancellata",
+               text: `Gentile,${user.firstName}${user.lastName}${process.env.CANCELLED_APPOINTMENT}`
             };
             transporter.sendMail(mailOption,function(error){
           if(error){
