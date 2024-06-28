@@ -309,7 +309,7 @@ if (!req?.files?.profile)
     }
   } catch (error) {
     console.log(error.message);
-    res.json({success: false,message: "Internal server error"});
+    res.json({success: false,message: error.message});
   }
 };
 //delete profile picture
@@ -340,12 +340,12 @@ res.json({
     }); 
     }  
 }else{
-    res.json({success: false,message: result.result})
+    res.json({success: true,message: result.result})
 }
         }
     } catch (error) {
         console.log(error.message);
-        res.json({success:false,message: "Internal server error"});
+        res.json({success:false,message: error.message});
     }
 };
 //get user details

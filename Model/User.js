@@ -62,9 +62,11 @@ const userSchema = new Schema(
     },
     pic_public_id: {
       type: String,
+      default: ""
     },
     picture_url: {
       type: String,
+      default: ""
     },
     default_picture_url: {
       type: String,
@@ -73,12 +75,15 @@ const userSchema = new Schema(
     },
     dob: {
       type: String,
+      default: ""
     },
     location: {
       type: String,
+      default: ""
     },
     postal_code: {
       type: String,
+      default: ""
     },
     sex: {
       type: String,
@@ -109,18 +114,23 @@ const userSchema = new Schema(
     },
     signature_url: {
       type: String,
+      default: ""
     },
     signature_public_id: {
       type: String,
+      default: ""
     },
     about: {
       type: String,
+      default: ""
     },
     doctor_cv_url: {
       type: String,
+      default: ""
     },
     cv_public_id: {
       type: String,
+      default: ""
     },
     good_health: {
       type: String,
