@@ -315,35 +315,30 @@ if (!req?.files?.profile)
 //delete profile picture
 const deleteProfilePicture = async(req,res)=>{
     try {
-      res.json({success: true, message: req.body.public_id});
-//         const data = await User.findOne({pic_public_id: req.body.public_id});
-//         if(!data){
-//              return res.json({success: false,message: "profile picture does not exist"})
-//         }else{
-// const result =  await cloudinary.uploader.destroy(req.body.public_id);
-// if(result.result === 'ok'){
+     
+        const data = await User.findOne({pic_public_id: req.body.public_id});
+        if(!data){
+             return res.json({success: false,message: "pic_public_id does not exist"})
+        }else{
+          console.log(data);
+const result =  await cloudinary.uploader.destroy(req.body.public_id);
+if(result.result === 'ok'){
 
-// const doc =   await User.findByIdAndUpdate(
-//       { _id: data._id },
-//       { $set: { picture_url: "",  pic_public_id: "" } },
-//       { new: true }
-//     );
-//     if(doc){
-// res.json({
-//       success: true,
-//       message: doc,
-//     });
-//     }else{
-//         console.log(error.message);
-//        res.json({
-//       success: false,
-//       message: error.message,
-//     }); 
-//     }  
-// }else{
-//     res.json({success: true,message: result.result})
-// }
-//         }
+const doc =   await User.findByIdAndUpdate(
+      { _id: data._id },
+      { $set: { picture_url: "",  pic_public_id: "" } },
+      { new: true }
+    );
+    if(doc){
+res.json({success: true, message: doc});
+    }else{
+        console.log(error.message);
+       res.json({success: false, message: error.message}); 
+    }  
+}else{
+    res.json({success: true,message: result.result})
+}
+        }
     } catch (error) {
         console.log(error.message);
         res.json({success:false,message: error.message});
