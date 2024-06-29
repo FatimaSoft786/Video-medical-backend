@@ -157,7 +157,7 @@ const appointment = await Appointment.findById(appointmentId);
 const fetchAppointmentByPatient = async(req,res)=>{
   try {
 
-    const data = await Appointment.find({patient: req.body.patient}).populate('doctor', '_id firstName lastName picture_url specialist total_reviews average_rating favorites location').populate('patient', '_id firstName lastName picture_url');
+    const data = await Appointment.find({patient: req.body.patient}).populate('doctor', '_id firstName lastName picture_url default_picture_url specialist total_reviews average_rating favorites location').populate('patient', '_id firstName lastName picture_url');
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{
@@ -284,6 +284,24 @@ const approvalRequest = async(req,res)=>{
   }
 }
 
+// fetch notification by patient
+const fetchNotificationsByPatient = async(req,res)=>{
+  try {
+
+    const data = await Appointment.find({appointment_date: req.body.date}).populate('doctor', '_id firstName lastName picture_url default_picture_url specialist total_reviews average_rating favorites location').populate('patient', '_id firstName lastName picture_url default_picture_url');
+    if(!data){
+      return res.json({success: false, message: "Data not found"})
+    }else{
+    // const appointments = await Appointment.find()
+    res.json({success: true, notifications: data}); 
+    }
+
+   
+  } catch (error) {
+    console.log(error.message);
+    return res.json({success: false, message: "Internal server error"});
+  }
+}
 
 
 
@@ -297,5 +315,6 @@ module.exports = {
     fetchPatientProfile,
     BookAppointment,
     approvalRequest,
-    upcomingAppointments
+    upcomingAppointments,
+    fetchNotificationsByPatient
 }
