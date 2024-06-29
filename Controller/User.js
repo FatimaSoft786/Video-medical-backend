@@ -297,6 +297,41 @@ const editPatientProfile = async(req,res)=>{
         return res.json({success: false, message: "Internal server error"});
     }
 }
+//edit doctor profile 
+const editDoctorProfile = async(req,res)=>{
+   try {
+        const user =  await User.findOne({_id: req.body.doctorId});
+        if(user){
+            const data = await User.findByIdAndUpdate(
+        { _id: req.body.doctorId },
+        {
+          $set: {
+        "firstName": req.body.firstName,
+        "lastName": req.body.lastName,
+        "email": req.body.email,
+        "phoneNumber": req.body.phoneNumber,
+        "dob": req.body.dob,
+        "location": req.body.location,
+        "postal_code": req.body.postal_code,
+        "sex": req.body.sex,
+        "studies_start_year": req.body.studies_start_year,
+        "studies_end_year": req.body.studies_end_year,
+        "clinic_hospital_address": req.body.clinic_hospital_address,
+        "specialist": req.body.specialist,
+        "special_recognition": req.body.special_recognition
+          },
+        },
+        { new: true }
+      );
+       res.json({success: true, message: data})
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+        return res.json({success: false, message: "Internal server error"});
+    }
+  
+}
 //upload profile picture
  const uploadProfilePicture = async(req,res)=>{
   try { 
@@ -684,5 +719,6 @@ module.exports = {
     getSlots,
     doctorProfile,
     patientProfile,
-    doctorDashboard
+    doctorDashboard,
+    editDoctorProfile
 }
