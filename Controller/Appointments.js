@@ -231,7 +231,7 @@ const upcomingAppointments = async(req,res)=>{
     return res.json({success: false, message: "Internal server error"});
   }
 }
-// approval request for the appointment accept or declined
+// approval request for the appointment
 const approvalRequest = async(req,res)=>{
   try {
      const {appointmentId,status} = req.body;
@@ -266,8 +266,8 @@ const approvalRequest = async(req,res)=>{
     let mailOption = {
                 from: process.env.SMTP_MAIL,
                 to: appointment.patient.email,
-                subject: "Appointment Declined",
-                text: `Sad!! this is the official email your appointment have been declined by the doctor`
+                subject: "Appointment Cancelled",
+                text: process.env.CANCELLED_APPOINTMENT
             };
             transporter.sendMail(mailOption,function(error){
           if(error){
@@ -283,7 +283,6 @@ const approvalRequest = async(req,res)=>{
     return res.json({success: false, message: "Internal server error"});
   }
 }
-
 // fetch notification by patient
 const fetchNotificationsByPatient = async(req,res)=>{
   try {

@@ -12,9 +12,6 @@ router.post("/BookAppointment",fetchUser,BookAppointment);
 router.post("/ApprovalAppointmentRequest",fetchUser,approvalRequest);
 router.post("/upcomingAppointments",fetchUser,upcomingAppointments);
 router.post("/patientNotifications",fetchUser,fetchNotificationsByPatient);
-
-
-
-
+router.post("/appointmentRequest",fetchUser,approvalRequest);
 
 module.exports = router;
