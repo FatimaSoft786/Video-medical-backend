@@ -466,7 +466,7 @@ if (!req?.files?.signature)
             {_id: req.body.doctorId},
             {$set: {signature_public_id: result.public_id,signature_url: result.secure_url}},
             {new: true})
-            res.json({success: true, message: "Image uploaded on the cloud"})
+            res.json({success: true, user_details: data});
     }
   } catch (error) {
     console.log(error.message);
