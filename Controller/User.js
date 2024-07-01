@@ -699,7 +699,6 @@ const doctorDashboard = async(req,res)=>{
 }
 
 
-
 module.exports = {
     register,
     login,
