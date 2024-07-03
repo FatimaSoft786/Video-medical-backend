@@ -229,54 +229,7 @@ res.json({success: true, total_doctors: doctor.length,total_patients: patient.le
   }
  }
 
- //account approval request
- const doctorsAccounts = async(req,res)=>{
 
-  const {id} = req.params;
-  try {
-      
-     if(req.body.account_approved === true){
-const user = await User.findByIdAndUpdate(id, req.body, { new: true });
-     if(user){
- let mailOption = {
-                from: process.env.SMTP_MAIL,
-                to: req.body.email,
-                subject: "Account approved",
-                text: `your account is approved by the admin now you can login the doctor portal and enjoy the services of our platform. email:${req.body.email} and password:${"Test@12345"}`
-            };
-            transporter.sendMail(mailOption,function(error){
-          if(error){
-            return res.json({success: false, message: error.message})
-          }else{
-           res.json({success: true, message: "Email has been sent on the doctor email"})
-          }
-            }); 
-     }
-     }else{
-      const user = await User.findByIdAndUpdate(id, req.body, { new: true });
-     if(user){
- let mailOption = {
-                from: process.env.SMTP_MAIL,
-                to: req.body.email,
-                subject: "Account Declined",
-                text: `your account is declined by the admin so you can contact on our official email `
-            };
-            transporter.sendMail(mailOption,function(error){
-          if(error){
-            return res.json({success: false, message: error.message})
-          }else{
-           res.json({success: true, message: "Email has been sent on the doctor email"})
-          }
-            }); 
-     }
-     }
-
-     
-  } catch (error) {
-    console.log(error.message);
-    res.json({success: false,message: "Internal Serve error"});
-  }
- }
 
 // approval request for the account accept or declined
 const approvalRequest = async(req,res)=>{
@@ -294,7 +247,7 @@ const approvalRequest = async(req,res)=>{
                 from: process.env.SMTP_MAIL,
                 to: doctor.email,
                 subject: "Account approved",
-                text: `Congratulations!! this is the official email y the admin your account is approved and now you can login the and your default password is Test@12345 and please further reset your password.`
+                text: `Benvenuto a bordo di Video Medico, Dottor ${doctor.firstName} ${doctor.lastName}`+ process.env.DOCTOR_REGISTRATION
             };
             transporter.sendMail(mailOption,function(error){
           if(error){
@@ -351,8 +304,6 @@ module.exports = {
   checkEmail,
   resetPassword,
   doctors,
-  patients,
-  doctorsAccounts,
   countData,
   fetchDoctorByID,
   approvalRequest,

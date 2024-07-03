@@ -259,7 +259,21 @@ const verifyOtp = async(req,res)=>{
                     {_id: user._id},
                     {$set: {otp: "",account_approved: true}},
                     {new: true}).select("-password");
-                    res.json({success: true, message:data});
+                    if(data){
+  let mailOption = {
+                from: process.env.SMTP_MAIL,
+                to: data.email,
+                subject: "Benvenuto su Video Medico",
+                text: process.env.PATIENT_REGISTRATION
+            };
+            transporter.sendMail(mailOption,function(error){
+          if(error){
+          return  res.json({success:false, message: error})
+          }else{
+           res.json({success: true, message:data});
+          }
+            }); 
+                    }      
             }
         }
         
