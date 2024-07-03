@@ -641,7 +641,7 @@ const addSlots = async(req,res)=>{
     user.currency = req.body.currency
       const data = await user.save();
       if(data){
-        return res.json({success: true, message: data});
+        return res.json({success: true, user_details: data});
       }
      }
   } catch (error) {
