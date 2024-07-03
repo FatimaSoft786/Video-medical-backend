@@ -646,7 +646,7 @@ const addSlots = async(req,res)=>{
      }
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: error.message});
   }
 };
 //Get slots
