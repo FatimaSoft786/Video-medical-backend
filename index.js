@@ -8,6 +8,8 @@ const connectToMongo = require('./db');
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const userModel = require("./Model/User")
+const http = require("http");
+const { Server } = require("socket.io");
 app.use(cors({origin: "*"}));
 
 // mail transporter
@@ -168,7 +170,32 @@ function create_cron_date(seconds,minute,hour,day_of_the_month,month,day_of_the_
 // scheduleNotification('29 June 2024');
 
 
-app.listen(process.env.PORT,()=>{
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+});
+// Handle WebSocket connections here
+io.on("connection", (socket) => {
+  console.log("A new user has connected", socket.id);
+
+  // Listen for incoming messages from clients
+  socket.on("message", (message) => {
+    // Broadcast the message to all connected clients
+    io.emit("message", message);
+  });
+
+  // Handle disconnections
+  socket.on("disconnect", () => {
+    console.log(socket.id, " disconnected");
+  });
+});
+
+
+
+server.listen(process.env.PORT,()=>{
     console.log("Server is connected with",process.env.PORT);
     connectToMongo();
 })
