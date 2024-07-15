@@ -186,6 +186,8 @@ io.on("connection", (socket) => {
     // Broadcast the message to all connected clients
     io.emit("message", message);
   });
+  //Fetch our own socket id
+   socket.emit("me", socket.id);
 
   // Handle disconnections
   socket.on("disconnect", () => {
