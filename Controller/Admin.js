@@ -121,8 +121,8 @@ const signup = async(req,res)=>{
         id: user.id
       }
     }
-     const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-    res.json({success: true, message:"user created successfully",token});
+    //  const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+    res.json({success: true, message:"admin created successfully"});
   
   } catch (error) {
      console.error(error.message);
