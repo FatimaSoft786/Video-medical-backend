@@ -304,6 +304,7 @@ module.exports = {
   checkEmail,
   resetPassword,
   doctors,
+  patients,
   countData,
   fetchDoctorByID,
   approvalRequest,
