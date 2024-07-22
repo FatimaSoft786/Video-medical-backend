@@ -182,19 +182,11 @@ const io = new Server(server, {
 const users = {};
 // Handle WebSocket connections here
 io.on("connection", (socket) => {
-  //console.log("A new user has connected", socket.id);
-
+  // console.log("A new user has connected", socket.id);
    socket.on('join', (username) => {
         users[socket.id] = username;
         io.emit('updateUsers', users);
     });
-
-    // When a user disconnects, remove them from the users object
-    // socket.on('disconnect', () => {
-        
-    // });
-
-
   // Listen for incoming messages from clients
   socket.on("message", (message) => {
     // Broadcast the message to all connected clients
@@ -206,8 +198,8 @@ io.on("connection", (socket) => {
   // Handle disconnections
   socket.on("disconnect", () => {
     console.log(socket.id, " disconnected");
-   // delete users[socket.id];
-      //  io.emit('updateUsers', users);
+   delete users[socket.id];
+       io.emit('updateUsers', users);
   });
 });
 
