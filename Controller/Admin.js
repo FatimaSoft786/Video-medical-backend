@@ -228,9 +228,6 @@ res.json({success: true, total_doctors: doctor.length,total_patients: patient.le
     return res.json({success: false, message: 'Internal Server error'});
   }
  }
-
-
-
 // approval request for the account accept or declined
 const approvalRequest = async(req,res)=>{
   try {
@@ -283,7 +280,6 @@ const approvalRequest = async(req,res)=>{
     return res.json({success: false, message: "Internal server error"});
   }
 }
-
 //Get all transactions
 const getTransactions = async(req,res)=>{
   try {
