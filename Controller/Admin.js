@@ -107,7 +107,7 @@ const signup = async(req,res)=>{
   try {
     let user = await Admin.findOne({email});
   if (user) {
-    return res.json({success:false, message: "Sorry a user with this email already exists"});
+    return res.json({success:false, message: "Siamo spiacenti, esiste già un utente con questa email"});
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -122,11 +122,11 @@ const signup = async(req,res)=>{
       }
     }
     //  const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-    res.json({success: true, message:"admin account created successfully,now you can login the account from the login page."});
+    res.json({success: true, message:"Account Admin creato correttamente, ora puoi accedere all'account."});
   
   } catch (error) {
      console.error(error.message);
-     return res.json({success: false, message: 'Internal server error'});
+     return res.json({success: false, message: 'Errore interno del server'});
   }
 
 }
@@ -136,12 +136,12 @@ const { email, password } = req.body;
   try {
     let user = await Admin.findOne({ email });
     if (!user) {
-      return res.json({success: false, message: "Please try to login with correct email" });
+      return res.json({success: false, message: "Prova ad accedere con l'e-mail corretta" });
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
-      return res.json({ success:false, message: "Please try to login with correct password" });
+      return res.json({ success:false, message: "Prova ad accedere con la password corretta" });
     }
 
     const data = {
@@ -150,11 +150,11 @@ const { email, password } = req.body;
       }
     }
        const token = jwt.sign(data,process.env.JWT_SECRET_KEY);
-       res.json({success: true, message:"user logged in  successfully",token});
+       res.json({success: true, message:"Hai effettuato l'accesso correttamente",token});
    
   } catch (error) {
      console.error(error.message);
-     return res.json({success: false, message: 'Internal server error'});
+     return res.json({success: false, message: 'Errore interno del server'});
   }
 
 }
