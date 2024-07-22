@@ -122,7 +122,7 @@ const signup = async(req,res)=>{
       }
     }
     //  const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-    res.json({success: true, message:"admin created successfully"});
+    res.json({success: true, message:"admin account created successfully,now you can login the account from the login page."});
   
   } catch (error) {
      console.error(error.message);
@@ -149,7 +149,7 @@ const { email, password } = req.body;
         id: user.id
       }
     }
-       const token = jwt.sign(data,process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+       const token = jwt.sign(data,process.env.JWT_SECRET_KEY);
        res.json({success: true, message:"user logged in  successfully",token});
    
   } catch (error) {
