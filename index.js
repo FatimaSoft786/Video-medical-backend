@@ -178,9 +178,11 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+// Store users and their socket IDs
+const users = {};
 // Handle WebSocket connections here
 io.on("connection", (socket) => {
-  console.log("A new user has connected", socket.id);
+  //console.log("A new user has connected", socket.id);
 
    socket.on('join', (username) => {
         users[socket.id] = username;
@@ -204,8 +206,8 @@ io.on("connection", (socket) => {
   // Handle disconnections
   socket.on("disconnect", () => {
     console.log(socket.id, " disconnected");
-    delete users[socket.id];
-        io.emit('updateUsers', users);
+   // delete users[socket.id];
+      //  io.emit('updateUsers', users);
   });
 });
 
