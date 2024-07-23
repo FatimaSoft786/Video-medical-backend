@@ -36,7 +36,7 @@ const register = async(req,res)=>{
     try {
         let check = await User.findOne({email: req.body.email});
         if(check){
-           return  res.json({success:false,message: "Sorry a user with this email already exist"})
+           return  res.json({success:false,message: "Prova ad accedere con l'e-mail corretta"})
         }else{
     const otp = generateOTP();
         if(req.body.role === 'Patient'){
@@ -125,7 +125,7 @@ Video Medico`
  }
     } catch (error) {
       console.log(error.message);
-       return res.json({success:false,message: "Internal server error"});
+       return res.json({success:false,message: "Errore interno del server"});
     }
 };
 // user login
@@ -134,12 +134,12 @@ const login = async(req,res)=>{
   try {
     let user = await User.findOne({email: email });
     if (!user) {
-      return res.json({success: false, message: "Please try to login with correct email" });
+      return res.json({success: false, message: "Prova ad accedere con l'e-mail corretta" });
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
-      return res.json({ success:false, message: "Please try to login with correct password" });
+      return res.json({ success:false, message: "Prova ad accedere con la password corretta" });
     }
      if(user.account_verified === false){
       return res.json({success: false, message: "Please first do verify your account", account_verified: user.account_verified});
