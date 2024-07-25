@@ -256,6 +256,9 @@ const userSchema = new Schema(
     average_rating: {
       type: Number,
       default: 0
+    },
+    meeting:{
+    type: String
     }
   },
   {

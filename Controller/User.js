@@ -711,6 +711,21 @@ const doctorDashboard = async(req,res)=>{
     console.log(error.message);
   }
 }
+// add Meeting
+ const addMeeting = async(req,res)=>{
+  try { 
+    const {doctorId,roomId} = req.body;
+  const data = await User.findByIdAndUpdate(
+            {_id: doctorId},
+            {$set: {meeting: roomId}},
+            {new: true})
+            res.json({success: true, message: "Meeting room id is save"});
+  } catch (error) {
+    console.log(error.message);
+    res.json({success: false,message: "Internal server error"});
+  }
+};
+
 
 
 module.exports = {
@@ -736,5 +751,6 @@ module.exports = {
     doctorProfile,
     patientProfile,
     doctorDashboard,
-    editDoctorProfile
+    editDoctorProfile,
+    addMeeting
 }
