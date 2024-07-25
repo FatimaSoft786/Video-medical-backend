@@ -108,7 +108,7 @@ Video Medico`
 
              let mailOption = {
                 from: process.env.SMTP_MAIL,
-                to: "shahzaibmehmood65@gmail.com",
+                to: "medicalvideovisit.noreply@gmail.com",
                 subject: "Doctor form request for the account approval",
                 text: `Hi admin!! this the Dr.${req.body.firstName}${req.body.lastName} and he is specialist in the ${req.body.specialist} so look his account on the admin portal thanks.`
             };
