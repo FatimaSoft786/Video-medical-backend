@@ -77,7 +77,7 @@ const createAppointment = async(req,res)=>{
 //fetch all appointments
 const fetchAppointments = async(req,res)=>{
   try {
-    const appointments = await Appointment.find().populate('doctor', '_id firstName lastName default_picture_url specialist').populate('patient', '_id firstName lastName picture_url');
+    const appointments = await Appointment.find().populate('doctor', '_id firstName lastName default_picture_url specialist meeting').populate('patient', '_id firstName lastName picture_url');
     res.json({success: true, appointments: appointments}); 
   } catch (error) {
     console.log(error.message);
@@ -157,7 +157,7 @@ const appointment = await Appointment.findById(appointmentId);
 const fetchAppointmentByPatient = async(req,res)=>{
   try {
 
-    const data = await Appointment.find({patient: req.body.patient}).populate('doctor', '_id firstName lastName picture_url default_picture_url specialist total_reviews average_rating favorites location').populate('patient', '_id firstName lastName picture_url');
+    const data = await Appointment.find({patient: req.body.patient}).populate('doctor', '_id firstName lastName picture_url default_picture_url specialist total_reviews average_rating favorites location meeting').populate('patient', '_id firstName lastName picture_url');
     if(!data){
       return res.json({success: false, message: "Data not found"})
     }else{
