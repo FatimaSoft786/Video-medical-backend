@@ -87,8 +87,9 @@ const fetchAppointments = async(req,res)=>{
 //change appointment status
 const changeAppointmentStatus = async(req,res)=>{
     try {
-   const appointment = await Appointment.findOne({_id: req.body.appointmentId});
-   if(appointment.appointment_status === 'waiting'){
+      const {appointment_status,appointmentId} = req.body;
+   const appointment = await Appointment.findOne({_id: appointmentId});
+   if(appointment_status === "completed" ){
     const admin_amount  = appointment.fee * 0.25;
      const doctor_amount = appointment.fee - admin_amount;
      
@@ -97,6 +98,12 @@ const changeAppointmentStatus = async(req,res)=>{
             {$set: {doctor_percentage_amount: doctor_amount,appointment_status: 'completed'}},
             {new: true});
             res.json({success: true, message: "Congratulations!! your payment has been transferred in your account"})
+   }else{
+     const data = await Appointment.findByIdAndUpdate(
+            {_id: appointmentId},
+            {$set: {appointment_status:'waiting'}},
+            {new: true});
+    res.json({success: true, message: "Appointment is incomplete"})
    }
 
     } catch (error) {

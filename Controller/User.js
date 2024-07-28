@@ -608,8 +608,7 @@ const deleteReview = async(req,res)=>{
   }
 }
 // average rating and total reviews
-const averageRating = async(doctorId)=>{
-    
+const averageRating = async(doctorId)=>{ 
   try {
     const users = await User.findOne({_id: doctorId });
 const reviewCount = users.reviews.length;
