@@ -27,6 +27,10 @@ const appointmentSchema = new mongoose.Schema({
         type: Number,
         default:0
     },
+    admin_percentage_amount: {
+       type: Number,
+       default:0
+    },
     appointment_status: {
         type: String,
         default: "waiting"

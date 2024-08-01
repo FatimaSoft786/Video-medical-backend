@@ -95,7 +95,7 @@ const changeAppointmentStatus = async(req,res)=>{
      
      const data = await Appointment.findByIdAndUpdate(
             {_id: req.body.appointmentId},
-            {$set: {doctor_percentage_amount: doctor_amount,appointment_status: 'completed'}},
+            {$set: {doctor_percentage_amount: doctor_amount,appointment_status: 'completed',admin_percentage_amount: admin_amount}},
             {new: true});
             res.json({success: true, message: "Congratulations!! your payment has been transferred in your account"})
    }else{

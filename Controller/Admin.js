@@ -187,13 +187,13 @@ const countData = async(req,res)=>{
 const doctor = await User.find({role: req.body.role});
 const patient = await User.find({role: req.body.role1});
 const appointments = await Appointments.find();
-const payments = await Payments.find();
+console.log(appointments);
 const adminAmountsDict = {};
- payments.forEach(payment => {
+ appointments.forEach(payment => {
     adminAmountsDict[payment._id] = payment.admin_percentage_amount || 0;
   });
   let totalAdminAmount = 0;
-  payments.forEach(payment => {
+  appointments.forEach(payment => {
     const adminAmount = adminAmountsDict[payment._id] || 0;
     totalAdminAmount += adminAmount;
    // console.log(`Payment ID: ${payment._id}, Admin Percentage Amount: ${adminAmount}`);
