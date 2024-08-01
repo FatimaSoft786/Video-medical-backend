@@ -49,7 +49,7 @@ app.post(
           fee: paymentIntent.metadata.fee,
           appointment_date: paymentIntent.metadata.appointment_date,
           appointment_time: paymentIntent.metadata.appointment_time,
-          payment_status: "Paid"
+          payment_status: "Pagato"
          });
           const patient = await userModel.findById(
           paymentIntent.metadata.patient
