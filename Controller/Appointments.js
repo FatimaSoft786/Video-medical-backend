@@ -47,8 +47,8 @@ const BookAppointment = async (req, res) => {
             "appointment_time": req.body.appointment_time
           }
         },
-        success_url: "https://medical-appointment-git-api-inte-645272-hassam-bhuttas-projects.vercel.app/en/patient/appointments/success",
-        cancel_url: "https://medical-appointment-git-api-inte-645272-hassam-bhuttas-projects.vercel.app/en/patient/appointments/failed"
+        success_url: "http://localhost:3000/it/patient/appointments/success",
+        cancel_url: "http://localhost:3000/it/patient/appointments/failed"
       });
       res.status(200).json({url: session.url})
   } catch (error) {
