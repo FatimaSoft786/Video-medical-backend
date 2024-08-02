@@ -2,6 +2,9 @@ const mongoose = require("mongoose")
 const recordingSchema = new mongoose.Schema({
     recording: {
         type: String
+    },
+    recordDate:{
+        type: String
     }
 },
 {

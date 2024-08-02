@@ -21,7 +21,8 @@ if (!req?.files?.recording)
     if(result){
 
         const data = await Recording.create({
-            recording: result.secure_url
+            recording: result.secure_url,
+            recordDate: req.body.date
         });
         console.log(data);
      
