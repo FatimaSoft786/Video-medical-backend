@@ -47,8 +47,8 @@ const BookAppointment = async (req, res) => {
             "appointment_time": req.body.appointment_time
           }
         },
-        success_url: "http://localhost:3000/it/patient/appointments/success",
-        cancel_url: "http://localhost:3000/it/patient/appointments/failed"
+        success_url: "https://video-medical-master.vercel.app/it/patient/appointments/success",
+        cancel_url: "https://video-medical-master.vercel.app/it/patient/appointments/failed"
       });
       res.status(200).json({url: session.url})
   } catch (error) {
