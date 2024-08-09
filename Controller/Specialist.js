@@ -12,7 +12,7 @@ const addSpecialist = async(req,res)=>{
         
     } catch (error) {
         console.log(error.message);
-        res.json({success: false,message: "Internal server error"});
+        res.json({success: false,message: "Errore interno del server"});
     }
 };
 
@@ -22,7 +22,7 @@ const getSpecialists = async(req,res)=>{
        res.json({success:true, total_specialist_category: check.length, specialists: check})
     } catch (error) {
         console.log(error.message);
-        res.json({success: false, message: "Internal server error"});
+        res.json({success: false, message: "Errore interno del server"});
     }
 };
 
@@ -41,7 +41,7 @@ const fetchDoctors =async(req,res)=>{
         
     } catch (error) {
         console.log(error.message);
-        res.json({success: false,message: "Internal server error"});
+        res.json({success: false,message: "Errore interno del server"});
     }
 }
 

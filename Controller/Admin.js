@@ -33,22 +33,22 @@ const verifyOtp = async(req,res)=>{
     
         let user = await Admin.findOne({otp: req.body.otp});
         if(!user){
-         return  res.json({success:false, message: "code not found"})
+         return  res.json({success:false, message: "Codice non trovato"})
         }else{
  const isExpired = isOTPExpired(user.updatedAt);
             if(isExpired){
-                return res.json({success: false, message: "Your otp is expired"})
+                return res.json({success: false, message: "Il tuo OTP è scaduto"})
             }else{
                 const data = await Admin.findByIdAndUpdate(
                     {_id: user._id},
                     {$set: {otp: "", account_verified: true}},
                     {new: true});
-                    res.json({success: true, message: "Your otp is verified", id: data._id});
+                    res.json({success: true, message: "OTP verificato con successo!", id: data._id});
             }
         }
         
     } catch (error) {
-       return res.json({success:false, message: 'Internal server error'})
+       return res.json({success:false, message: 'Errore interno del server'})
     }
 };
 
@@ -57,7 +57,7 @@ const checkEmail = async(req,res)=>{
     try {
      const user = await Admin.findOne({email: req.body.email});
      if(!user){
-        return res.json({success:false, message: "User with this email does not exist"})
+        return res.json({success:false, message: "Non esistono utenti collegati a questa email"})
      }else {
         const otp = generateOTP();
            await Admin.findByIdAndUpdate(
@@ -74,13 +74,13 @@ const checkEmail = async(req,res)=>{
           if(error){
             return res.json({success: true, message: error})
           }else{
-           res.json({success: false, message: "Please check your email otp has been sent."})
+           res.json({success: false, message: "Controlla la tua email, è stato inviato un codice."})
           }
             });          
      }
     } catch (error) {
       console.log(error.message);
-       return  res.json({success: false, message: 'Internal Server error'})
+       return  res.json({success: false, message: 'Errore interno del server'})
     }
 }
 
@@ -94,7 +94,7 @@ const resetPassword = async(req,res)=>{
       { $set: { password: securePass } },
       { new: true }
     );
-    res.json({success: false, message: "Your password has been reset"});
+    res.json({success: false, message: "La tua password è stata aggiornata con successo"});
 
     } catch (error) {
        return res.json({success: true, message: error.message})
@@ -177,7 +177,7 @@ const { email, password } = req.body;
     
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
  }
 
@@ -201,7 +201,7 @@ const adminAmountsDict = {};
 res.json({success: true, total_doctors: doctor.length,total_patients: patient.length, total_appointments: appointments.length,admin_revenue: totalAdminAmount});    
   } catch (error) {
      console.log(error.message);
-    return res.json({success: false, message: 'Internal Server error'});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
 }
 
@@ -213,7 +213,7 @@ res.json({success: true, total_doctors: doctor.length,total_patients: patient.le
 
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: 'Internal Server error'});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
  }
 //patients list
@@ -225,7 +225,7 @@ res.json({success: true, total_doctors: doctor.length,total_patients: patient.le
 
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: 'Internal Server error'});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
  }
 // approval request for the account accept or declined
@@ -250,7 +250,7 @@ const approvalRequest = async(req,res)=>{
           if(error){
             return res.json({success: true, message: error})
           }else{
-           res.json({success: true, message: "Email sent to the doctor email"})
+           res.json({success: true, message: "Email inviata"})
           }
             });   
     }else{
@@ -270,14 +270,14 @@ const approvalRequest = async(req,res)=>{
           if(error){
             return res.json({success: true, message: error})
           }else{
-           res.json({success: true, message: "Email sent to the doctor email"})
+           res.json({success: true, message: "Email inviata"})
           }
             }); 
     }
     
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 //Get all transactions
@@ -287,7 +287,7 @@ const getTransactions = async(req,res)=>{
     res.json({success: true, total_payments: appointments.length,payments_list: appointments});
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 

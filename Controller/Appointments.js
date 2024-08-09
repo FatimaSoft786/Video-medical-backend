@@ -53,7 +53,7 @@ const BookAppointment = async (req, res) => {
       res.status(200).json({url: session.url})
   } catch (error) {
     console.log(error.message);
-    res.json({success: false, message: "Internal server error"})
+    res.json({success: false, message: "Errore interno del server"})
   }
 };
 //create Appointment
@@ -71,7 +71,7 @@ const createAppointment = async(req,res)=>{
             res.json({success:true,message: data})
     } catch (error) {
     console.log(error.message);
-       return res.json({success: false,message: 'Internal server error'});
+       return res.json({success: false,message: 'Errore interno del server'});
     }
 };
 //fetch all appointments
@@ -81,7 +81,7 @@ const fetchAppointments = async(req,res)=>{
     res.json({success: true, appointments: appointments}); 
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
 }
 //change appointment status
@@ -97,18 +97,18 @@ const changeAppointmentStatus = async(req,res)=>{
             {_id: req.body.appointmentId},
             {$set: {doctor_percentage_amount: doctor_amount,appointment_status: 'completed',admin_percentage_amount: admin_amount}},
             {new: true});
-            res.json({success: true, message: "Congratulations!! your payment has been transferred in your account"})
+            res.json({success: true, message: "Congratulazioni! l tuo pagamento è stato trasferito sul tuo conto"})
    }else{
      const data = await Appointment.findByIdAndUpdate(
             {_id: appointmentId},
             {$set: {appointment_status:'waiting'}},
             {new: true});
-    res.json({success: true, message: "Appointment is incomplete"})
+    res.json({success: true, message: "Appuntamento incompleto"})
    }
 
     } catch (error) {
         console.log(error.message);
-        return res.json({success: false, message: error.message});
+        return res.json({success: false, message: 'Errore interno del server'});
     }
 }
 //cancel appointment
@@ -117,7 +117,7 @@ const cancelAppointment = async(req,res)=>{
    try {
 const appointment = await Appointment.findById(appointmentId);
         if (!appointment) {
-            return res.json({success: false, message: 'Appointment not found' });
+            return res.json({success: false, message: 'Appuntamento non trovato' });
         }
 
         const now = new Date();
@@ -144,17 +144,12 @@ const appointment = await Appointment.findById(appointmentId);
           if(error){
           return  res.json({success:false, message: error})
           }else{
-           console.log("email sent");
+           console.log("Email inviata");
           }
             }); 
         
-        res.json({success: true, message: 'Appointment cancelled successfully',data });
-        }
-
-       
-
-
-    
+        res.json({success: true, message: 'Appuntamento annullato con successo',data });
+        }    
    } catch (error) {
     console.log(error.message)
     return res.json({success: false, message: error.message});
@@ -166,7 +161,7 @@ const fetchAppointmentByPatient = async(req,res)=>{
 
     const data = await Appointment.find({patient: req.body.patient}).populate('doctor', '_id firstName lastName picture_url default_picture_url specialist total_reviews average_rating favorites location meeting').populate('patient', '_id firstName lastName picture_url');
     if(!data){
-      return res.json({success: false, message: "Data not found"})
+      return res.json({success: false, message: "Dati non trovati"})
     }else{
     // const appointments = await Appointment.find()
     res.json({success: true, appointments: data}); 
@@ -175,7 +170,7 @@ const fetchAppointmentByPatient = async(req,res)=>{
    
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 // fetch appointments by doctorId
@@ -183,7 +178,7 @@ const fetchAppointmentByDoctor = async(req,res)=>{
   try {
     const data = await Appointment.find({doctor: req.body.doctor});
     if(!data){
-      return res.json({success: false, message: "Data not found"})
+      return res.json({success: false, message: "Dati non trovati"})
     }else{
      const appointments = await Appointment.find().populate('patient', '_id firstName lastName picture_url default_picture_url postal_code sex dob location phoneNumber good_health serious_illness serious_illness_description past_surgery past_surgery_description current_medication current_medication_description heart_disease blood_pressure  allergies allergies_description diabetes kidney_disease thyroid stomach_disease  digestive_disease  digestive_description lung_disease lungs_description venereal nervous hormone any_illness any_illness_description smoke alcohol aids usual_medicine usual_medicine_description');
     
@@ -202,7 +197,7 @@ const fetchAppointmentByDoctor = async(req,res)=>{
    
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 //view patient profile By doctor
@@ -212,7 +207,7 @@ const fetchPatientProfile = async(req,res)=>{
     res.json({success: true, user_details: user })
   } catch (error) {
     console.error(error.message);
-  return  res.json({success: false, message:"Internal Server Error"});
+  return  res.json({success: false, message:"Errore interno del server"});
   }
 
 };
@@ -260,7 +255,7 @@ const approvalRequest = async(req,res)=>{
           if(error){
             return res.json({success: true, message: error})
           }else{
-           res.json({success: true, message: "Email sent to the patient email"})
+           res.json({success: true, message: "Email inviata"})
           }
             });   
     }else{
@@ -280,14 +275,14 @@ const approvalRequest = async(req,res)=>{
           if(error){
             return res.json({success: true, message: error})
           }else{
-           res.json({success: true, message: "Email sent to the doctor email"})
+           res.json({success: true, message: "Email inviata"})
           }
             }); 
     }
     
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 // fetch notification by patient
@@ -296,7 +291,7 @@ const fetchNotificationsByPatient = async(req,res)=>{
 
     const data = await Appointment.find({appointment_date: req.body.date}).populate('doctor', '_id firstName lastName picture_url default_picture_url specialist total_reviews average_rating favorites location').populate('patient', '_id firstName lastName picture_url default_picture_url');
     if(!data){
-      return res.json({success: false, message: "Data not found"})
+      return res.json({success: false, message: "Dati non trovati"})
     }else{
     // const appointments = await Appointment.find()
     res.json({success: true, notifications: data}); 
@@ -305,7 +300,7 @@ const fetchNotificationsByPatient = async(req,res)=>{
    
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 

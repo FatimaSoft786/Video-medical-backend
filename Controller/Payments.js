@@ -35,7 +35,7 @@ const CheckoutSession = async (req, res) => {
       res.status(200).json({url: session.url})
   } catch (error) {
     console.log(error.message);
-    res.json({success: false, message: "Internal server error"})
+    res.json({success: false, message: "Errore interno del server"})
   }
 };
 
@@ -55,7 +55,7 @@ const createPayment = async(req,res)=>{
     
   } catch (error) {
     console.log(error.message);
-   return res.json({success: false,message: "Internal server error"})
+   return res.json({success: false,message: "Errore interno del server"})
   }
 };
 //Get all payments
@@ -65,7 +65,7 @@ const getPayments = async(req,res)=>{
     res.json({success: true, total_payments: payments.length,payments_list: payments});
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 
@@ -75,13 +75,13 @@ const deletePayment = async(req,res)=>{
     
     const result = await Payment.findByIdAndDelete(req.body.paymentId);
     if (!result) {
-      return res.json({success: false, message: 'Payment not found'});
+      return res.json({success: false, message: 'Pagamento non trovato'});
     }
     res.json({success: true, message: 'payment deleted successfully'});
     
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 //Get payment details by id
@@ -90,13 +90,13 @@ const paymentDetails = async(req,res)=>{
     
     const result = await Payment.findById(req.body.paymentId);
     if (!result) {
-      return res.json({success: false, message: 'Payment not found'});
+      return res.json({success: false, message: 'Pagamento non trovato'});
     }
     res.json({success: true, payment_details: result});
     
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 

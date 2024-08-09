@@ -6,11 +6,11 @@ const addReview = async(req,res)=>{
    
   const data = await Review.findOne({patientId: req.body.patientId});
     if (data) {
-      return res.json({success: false, message: "Review found"})
+      return res.json({success: false, message: "Recensione trovata"})
     }else{
      const review = new Review(req.body);
     await review.save();
-     res.json({success: true, message: "Review saved successfully"});
+     res.json({success: true, message: "Recensione salvata con successo"});
     }
     // const reviewExists = data.reviews.some(review => review.doctorId.equals(req.body.doctorId));
     // if (reviewExists) {
@@ -20,7 +20,7 @@ const addReview = async(req,res)=>{
      
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 };
 //reviews list
@@ -30,11 +30,11 @@ const addReview = async(req,res)=>{
      if(review){
      res.json({success: true, reviews_list: review});
      }else{
-      res.json({success: false, message: "No data found"});
+      res.json({success: false, message: "Dati non trovati"});
      }
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: 'Internal Server error'});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
  }
  //delete reviews
@@ -44,12 +44,12 @@ try {
     const result = await Review.findByIdAndDelete(reviewId);
 
     if (!result) {
-      return res.json({success: false, message: 'Review not found'});
+      return res.json({success: false, message: 'Recensione non trovata'});
     }
     res.json({success: true, message: 'Review deleted successfully'});
   } catch (error) {
     console.log(error.message);
-    res.json.send({success: false, message: 'Internal server error'});
+    res.json.send({success: false, message: 'Errore interno del server'});
   }
 }
 
@@ -60,11 +60,11 @@ try {
      if(review){
      res.json({success: true, reviews_list: review});
      }else{
-      res.json({success: false, message: "No data found"});
+      res.json({success: false, message: "Dati non trovati"});
      }
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: 'Internal Server error'});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
  }
 

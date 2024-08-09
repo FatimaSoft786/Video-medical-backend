@@ -156,7 +156,7 @@ const login = async(req,res)=>{
    
   } catch (error) {
      console.error(error.message);
-     return res.json({success: false, message: 'Internal server error'});
+     return res.json({success: false, message: 'Errore interno del server'});
   }
 };
 // verify patient
@@ -164,12 +164,12 @@ const verifyUser = async(req,res)=>{
     try {
         let user = await User.findOne({otp: req.body.otp});
         if(!user){
-          return res.json({success:false, message: "Code not found"})
+          return res.json({success:false, message: "Codice non trovato"})
         }else{
             if(req.body.role === "Patient"){
 const isExpired = isOTPExpired(user.updatedAt);
             if(isExpired){
-                 res.json({success:false, message: "Your otp is expired"})
+                 res.json({success:false, message: "Il tuo OTP è scaduto"})
             }else{
                 const patientData = await User.findByIdAndUpdate(
                     {_id: user._id},
@@ -188,7 +188,7 @@ const isExpired = isOTPExpired(user.updatedAt);
         } 
     } catch (error) {
       console.log(error.message);
-       return res.json({success:false, message: "Internal server error"})
+       return res.json({success:false, message: "Errore interno del server"})
     }
 };
 // check user email
@@ -196,7 +196,7 @@ const checkEmail = async(req,res)=>{
     try {
      const user = await User.findOne({email: req.body.email});
      if(!user){
-        return res.json({success:false, message: "User with this email does not exist"})
+        return res.json({success:false, message: "Non esistono utenti collegati a questa email"})
      }else {
         const otp = generateOTP();
            await User.findByIdAndUpdate(
@@ -217,13 +217,13 @@ Video Medico`
           if(error){
           return  res.json({success:false, message: error})
           }else{
-            res.json({success:true, message: "Please check your email code has been sent on the email."})
+            res.json({success:true, message: "Controlla la tua email, è stato inviato un codice."})
           }
             });          
      }
     } catch (error) {
       console.log(error.message);
-       return res.json({success:false, message: 'Internal server error'})
+       return res.json({success:false, message: 'Errore interno del server'})
     }
 }
 //reset password
@@ -237,11 +237,11 @@ const resetPassword = async(req,res)=>{
       { $set: { password: securePass }},
       { new: true }
     );
-    res.json({success:true, message: "Your password has been updated"});
+    res.json({success:true, message: "La tua password è stata aggiornata con successo"});
 
     } catch (error) {
       console.log(error.message);
-       return res.json({success:false, message: 'Internal server error'})
+       return res.json({success:false, message: 'Errore interno del server'})
     }
 }
 //verify otp code
@@ -249,11 +249,11 @@ const verifyOtp = async(req,res)=>{
     try {
         let user = await User.findOne({otp: req.body.otp});
         if(!user){
-         return  res.json({success:false, message: "code not found"})
+         return  res.json({success:false, message: "Codice non trovato"})
         }else{
       const isExpired = isOTPExpired(user.updatedAt);
             if(isExpired){
-                return res.json({success: false, message: "Your otp is expired"})
+                return res.json({success: false, message: "Il tuo OTP è scaduto"})
             }else{
                 const data = await User.findByIdAndUpdate(
                     {_id: user._id},
@@ -308,7 +308,7 @@ const editPatientProfile = async(req,res)=>{
         
     } catch (error) {
         console.log(error.message);
-        return res.json({success: false, message: "Internal server error"});
+        return res.json({success: false, message: "Errore interno del server"});
     }
 }
 //edit doctor profile 
@@ -342,7 +342,7 @@ const editDoctorProfile = async(req,res)=>{
         
     } catch (error) {
         console.log(error.message);
-        return res.json({success: false, message: "Internal server error"});
+        return res.json({success: false, message: "Errore interno del server"});
     }
   
 }
@@ -367,7 +367,7 @@ if (!req?.files?.profile)
     }
   } catch (error) {
     console.log(error.message);
-    res.json({success: false,message: error.message});
+    res.json({success: false,message: 'Errore interno del server'});
   }
 };
 //delete profile picture
@@ -376,7 +376,7 @@ const deleteProfilePicture = async(req,res)=>{
      
         const data = await User.findOne({pic_public_id: req.body.public_id});
         if(!data){
-             return res.json({success: false,message: "pic_public_id does not exist"})
+             return res.json({success: false,message: "pic_public_id non esiste"})
         }else{
           console.log(data);
 const result =  await cloudinary.uploader.destroy(req.body.public_id);
@@ -399,7 +399,7 @@ res.json({success: true, message: doc});
         }
     } catch (error) {
         console.log(error.message);
-        res.json({success:false,message: error.message});
+        res.json({success:false,message: 'Errore interno del server'});
     }
 };
 //get user details
@@ -409,7 +409,7 @@ const fetchProfile = async(req,res)=>{
     res.json({success: true, user_details: user })
   } catch (error) {
     console.error(error.message);
-  return  res.json({success: false, message:"Internal Server Error"});
+  return  res.json({success: false, message: "Errore interno del server"});
   }
 
 };
@@ -460,7 +460,7 @@ const patientMedicalHistory = async(req,res)=>{
         
     } catch (error) {
         console.log(error.message);
-        return res.json({success: false, message: "Internal server error"});
+        return res.json({success: false, message: "Errore interno del server"});
     }
 }
 //upload doctor signature 
@@ -484,7 +484,7 @@ if (!req?.files?.signature)
     }
   } catch (error) {
     console.log(error.message);
-    res.json({success: false,message: "Internal server error"});
+    res.json({success: false,message: "Errore interno del server"});
   }
 };
 //patient dashboard
@@ -497,7 +497,7 @@ const getAllDoctors = async(req,res)=>{
     
   } catch (error) {
     console.log(error.message);
-    res.json({success: false, message: "Internal server error"});
+    res.json({success: false, message: "Errore interno del server"});
   }
 }
 // delete specialists
@@ -520,7 +520,7 @@ const postFavorite = async(req,res)=>{
   try { 
   const data = await User.findById({_id: req.body.doctorId});
     if (!data) {
-      return res.json({success: false, message: "User not found"})
+      return res.json({success: false, message: "Utente non trovato"})
     }
     const favExists = data.favorites.some(fav => fav.doctorId.equals(req.body.doctorId));
     if (favExists) {
@@ -528,10 +528,10 @@ const postFavorite = async(req,res)=>{
     }
     data.favorites.push(req.body);
     await data.save();
-    return res.json({success: true, message: "Favorite saved successfully"});
+    return res.json({success: true, message: "Preferito salvato con successo"});
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: error});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
 };
 // get favorites
@@ -541,7 +541,7 @@ const getFavorites = async(req,res)=>{
     res.json({success: true, message: favorites});
     } catch (error) {
         console.log(error.message);
-      return  res.json({success:false, message: error.message});
+      return  res.json({success:false, message: 'Errore interno del server'});
     }
 }
 //remove favorite
@@ -556,12 +556,12 @@ const removeFavorite =async(req,res)=>{
     if (doc) {
       res.json({success: true, message: doc});
     } else {
-      res.json({success: false, message: "Favorites not found"});
+      res.json({success: false, message: "Preferiti non trovati"});
     }
     
   } catch (error) {
     console.log(error.message);
-    return res.json({success:false, message: "Internal server error"})
+    return res.json({success:false, message: "Errore interno del server"})
   }
 }
 // add reviews
@@ -569,22 +569,22 @@ const addReviews = async(req,res)=>{
   try {
      const data = await User.findOne({_id: req.body.doctorId});
     if (!data) {
-      return res.json({success: false, message: "User not found"})
+      return res.json({success: false, message: "Utente non trovato"})
     }
     const reviewExists = data.reviews.some(review => review.patientId.equals(req.body.patientId));
     if (reviewExists) {
        averageRating(req.body.doctorId)
-      return res.json({success: false, message: "Review by this user already exists"});
+      return res.json({success: false, message: "La recensione di questo utente esiste già"});
     }
     data.reviews.push(req.body);
    const doc = await data.save();
    if(doc){
     averageRating(req.body.doctorId)
    }
-    return res.json({success: true, message: "Review saved successfully"}); 
+    return res.json({success: true, message: "Recensione salvata con successo"}); 
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
 }
 // delete review 
@@ -620,7 +620,7 @@ const totalRating = users.reviews.reduce((sum, review) => sum + review.rating, 0
    )
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: "Internal server error"});
+    return res.json({success: false, message: "Errore interno del server"});
   }
   
 }
@@ -645,7 +645,7 @@ const addSlots = async(req,res)=>{
      }
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: error.message});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
 };
 //Get slots
@@ -656,11 +656,11 @@ const addSlots = async(req,res)=>{
      if(slot){
      res.json({success: true, appointment_details: slot});
      }else{
-      res.json({success: false, message: "No data found"});
+      res.json({success: false, message: "Dati non trovati"});
      }
   } catch (error) {
     console.log(error.message);
-    return res.json({success: false, message: 'Internal Server error'});
+    return res.json({success: false, message: 'Errore interno del server'});
   }
  }
  //get doctor details
@@ -670,7 +670,7 @@ const addSlots = async(req,res)=>{
     res.json({success: true, doctor_details: user })
   } catch (error) {
     console.error(error.message);
-  return  res.json({success: false, message:"Internal Server Error"});
+  return  res.json({success: false, message:"Errore interno del server"});
   }
 };
 // get patient details
@@ -680,7 +680,7 @@ const patientProfile = async(req,res)=>{
     res.json({success: true, patient_details: user })
   } catch (error) {
     console.error(error.message);
-  return  res.json({success: false, message:"Internal Server Error"});
+  return  res.json({success: false, message:"Errore interno del server"});
   }
 };
 
@@ -690,7 +690,7 @@ const doctorDashboard = async(req,res)=>{
     const {doctorId} = req.body;
     const doc = await User.findOne({_id: doctorId});
     if(!doc){
-  return res.json({success: false, message: "Data not found"})
+  return res.json({success: false, message: "Dati non trovati"})
     }
     else{
       const appointments = await Appointment.find({doctor: doctorId}).populate('patient','_id firstName lastName picture_url default_picture_url postal_code sex dob location phoneNumber good_health serious_illness serious_illness_description past_surgery past_surgery_description current_medication current_medication_description heart_disease blood_pressure  allergies allergies_description diabetes kidney_disease thyroid stomach_disease  digestive_disease  digestive_description lung_disease lungs_description venereal nervous hormone any_illness any_illness_description smoke alcohol aids usual_medicine usual_medicine_description')
@@ -708,6 +708,7 @@ const doctorDashboard = async(req,res)=>{
     }
   } catch (error) {
     console.log(error.message);
+    res.json({success: false, message: 'Errore interno del server'})
   }
 }
 // add Meeting
@@ -718,10 +719,10 @@ const doctorDashboard = async(req,res)=>{
             {_id: doctorId},
             {$set: {meeting: roomId}},
             {new: true})
-            res.json({success: true, message: "Meeting room id is save"});
+            res.json({success: true, message: "L'ID della Televisita è salvato"});
   } catch (error) {
     console.log(error.message);
-    res.json({success: false,message: "Internal server error"});
+    res.json({success: false,message: "Errore interno del server"});
   }
 };
 
