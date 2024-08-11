@@ -259,6 +259,10 @@ const userSchema = new Schema(
     },
     meeting:{
     type: String
+    },
+    device_token: {
+      type: String,
+      default:""
     }
   },
   {

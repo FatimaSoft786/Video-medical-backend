@@ -130,7 +130,7 @@ Video Medico`
 };
 // user login
 const login = async(req,res)=>{
-    const { email, password } = req.body;
+    const { email, password, token } = req.body;
   try {
     let user = await User.findOne({email: email });
     if (!user) {
@@ -149,10 +149,15 @@ const login = async(req,res)=>{
         id: user.id
       }
     }
-    
-       const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
+          const tokenData = await User.findByIdAndUpdate(
+                    {_id: user._id},
+                    {$set: {device_token: token}},
+                    {new: true});
+                    if(tokenData){
+  const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
       // const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION;
        res.json({success: true,account_approved: user.account_approved, role: user.role,accessToken,id:user._id});
+                    }
    
   } catch (error) {
      console.error(error.message);
