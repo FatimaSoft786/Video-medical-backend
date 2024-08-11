@@ -142,7 +142,7 @@ const login = async(req,res)=>{
       return res.json({ success:false, message: "Prova ad accedere con la password corretta" });
     }
      if(user.account_verified === false){
-      return res.json({success: false, message: "Please first do verify your account", account_verified: user.account_verified});
+      return res.json({success: false, message: "Per prima cosa verifica il tuo account", account_verified: user.account_verified});
      }
     const data = {
       user: {
@@ -182,7 +182,7 @@ const isExpired = isOTPExpired(user.updatedAt);
       }
     }
      const accessToken = jwt.sign(data,process.env.JWT_SECRET_KEY);
-       res.json({success: true, message:"account verified successfully",account_approved: true,accessToken});
+       res.json({success: true, message:"Account verificato con successo",account_approved: true,accessToken});
             }
             }
         } 
