@@ -10,6 +10,7 @@ const nodemailer = require("nodemailer");
 const userModel = require("./Model/User")
 const http = require("http");
 const { Server } = require("socket.io");
+const axios = require("axios")
 app.use(cors({origin: "*"}));
 
 let token = "";
@@ -220,13 +221,38 @@ const client = new JWT({
     scopes: SCOPES
 })
 async function getAccessToken(){
-  
     const tokens = await client.authorize();
     token = tokens.access_token;
     console.log(token);
     return tokens.access_token
 }
 getAccessToken();
+
+async function sendPushNotification(deviceToken,accessToken){
+  const notification = {
+    "title": "Test",
+    "body": "Hi notificAtion"
+  }
+    const message = {
+      "token": deviceToken,
+      "notification": notification
+    }
+    const messageJSON = {message}
+   const headers = {
+  'Authorization':  `Bearer ${accessToken}`,
+  'Content-Type': 'application/json',
+
+};
+    axios.post('https://fcm.googleapis.com/v1/projects/video-medical-visit/messages:send',messageJSON, { headers })
+  .then(response => {
+    console.log('Response data:', response.data);
+  })
+  .catch(error => {
+    console.error('Error making POST request:', error);
+  });
+    
+}
+//sendPushNotification("fiWynh9SPlAScGCP9hrwpR:APA91bFPJVT-UddJm8m58gOa0JRIChbX8tSTAO_akUrMqkUkaeOl4-vfozGlkW9gf1-Aawbna6ij0KwHXONp5v1hg1LAQFpvqvV-KqbiXkw-poIVcfveN8Phl5rvjZ21WzqZYKLIbzqW","ya29.c.c0ASRK0GY5110K37sSjyJ4rssQv9B5cVk259Wpk-I-5O6mtvExaHP1RStnTzftmHza98_SceZ2YkPTP6uN3-lWBjfChD-SI_R8cts9sCK5Riz5GqPiYJG9fFCgh4h_LvH-0eVguz4f1Hc3100CrAnESL0QaMvSdvpqXTOmnjDoH7Dth_mednSipSVdOAxHLcQYHcD66C278-sysHEd2kzJUVjS80fq7ynL_sY4G7qz2LWiGAm9FUGTy0AWzJ97_6-lhkzKsotoIEVzZ8ISBw1AJ3et20742UUEqFvP4f5aSMnL0kZLgPwJKggcwyTJMRp-DK7Kt75i_jVfWynCuX6dTuCslCaMyM1GSoIRo113fMi9Jx1_5xaHWmAo6wH387Di0cjpncB1O3Ye2kf-kpu4ZQnp_S5vfvf-x2cQ6fnoW47Wc5VgpSlygM8xkvl9QjJia2libzfqqladt851I1VlvmhUZqIX5waz0Ja-aqM2uXSvzX7QvIS6FJblrdfq3dMt86u0-ss-FMtzMpa8nk8gtUfh-p7JVJ6eMjSBzaS5gMyw4mvn7UU-JYV5Jveiffkexqfq1SnyOzQzXoh275OtwkuvwvUtXFo8c3QiBlh0mJQupWuM28xV6JfJRhniQfxeqpWImuq_RncBeMgY02tqviIFwqU0ffyfOb-i6YJ1g6ar4pqu49Vl8dUBBiXuaUcVXWsnx80IXcczS50X2UFOjYqoOUJIwOYimdI1xMkJ39eUz1u8nso4-cRIgthWBRsO2xpSIyayBOQegdBynz0OdI5RQ2_lwk7R-4QIY6nsVRUxJBUxeqdy4n06WltplvagzOVr72-RW8eUFfmy-ZjiSJ3IWsM8fh3m5ZWJirpfg4fhxJyxI6S2OSylMgnzl2lU6XOeMqsh8JRMaJBQvmz-3-xZWQqp1Q_iOapv7XyYvYchdqV3Ys5tB8ImbWzS-O-fUjgIRdI_g9opRRIFOhypaszr0a9__VdQJFQFx0rjgaR7jBSrd84gZ2w");
 
 
 server.listen(process.env.PORT,()=>{

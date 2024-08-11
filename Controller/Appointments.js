@@ -125,7 +125,7 @@ const appointment = await Appointment.findById(appointmentId);
         console.log(timeDifference);
 
         if (timeDifference > 48) {
-            return res.json({success: false, message: 'Cannot cancel an appointment less than 48 hours before the scheduled time' });
+            return res.json({success: false, message: 'Appuntamento annullato' });
         }else{
            const data = await Appointment.findByIdAndUpdate(
             {_id: appointmentId},
