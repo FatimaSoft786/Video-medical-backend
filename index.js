@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const {JWT} = require("google-auth-library");
 const app = express();
 const cors = require("cors");
 const cron = require('node-cron');
@@ -12,6 +13,13 @@ const http = require("http");
 const { Server } = require("socket.io");
 const axios = require("axios")
 app.use(cors({origin: "*"}));
+
+const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
+const client = new JWT({
+    email: "firebase-adminsdk-aqks0@video-medical-visit.iam.gserviceaccount.com",
+    key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDJADS7AibFQmI1\nVJ+y7kYhTKZ1I4povjoRF+RR+wfvJJo7g4LHWsW3/chyePdHDtsvcgEkBc0ya2nG\nUmrli/uXliA50dmLSpkGMNd9T9w9LELsoSED+byMGLG4LqSsYotHHFpIPXVFo8zR\nSJHzYU4czVjS5zDDhX2kgndQYXADmsE6CYxRtuU/bs19IAHe26JHvJt0qYM+UXas\n7+aLtPpuUqgTxjM9D7SAgwEL9ujjzzwHFw2fpHzKTW5SJmGC1KUDATXfrLnYc4IL\ne4AqdwqRbb0+x5GWj4pCwarF2CNosq+Zf0AsHePDEwZF8e2nBXrI3Qkggs71wkS2\ncsiN7eu9AgMBAAECggEAKq5OxCQTkAEF4h2vUJssjJ8eXJLYrd+w7FbGrorP1z3O\nO1N0ZnkVsXlkAjzCA1Z6AAPlDp1lwm5RFmIDXW1hVgG0o5p2J5AGWOxvoaYe1eWL\na3xWiqXR3ezTdhD/ejRtr0KrwBm+yHQdBpaymTvhDpgjI5ugfPAgaxmiFNEv7C+k\nhvP+ITUZvqXi1uHRmbWoqG4mlZVbBxRCV9CZrlCWS39J1j2u0Hj6sazAY09XWiLG\nGq1J3Bs5Iwbc1MGtyJLMxfmB0AJMNBC3ijmSlNh25GEadXu8nXcRaLEeWGU5s63V\nVOaDu1UBHE4nVA5eE2Lul/4zt1xMc5t0qCJhoJ2ZMQKBgQDy4lJgFU3mQWVz01uZ\nBNeo6g6TUdSTDEDH8GoUlK+QzpX8aFOO1oBYEZwJP1Ucx9OhkatxZnB+6rl7mWqy\nbRvhAIsfy6qp8k9bjlW70DLVC71Elr3mylVgUYC8nJJMvlzrs2rXGbuhcst5yfFk\nhdQ58aStXgP1wt4NVGELyn2LkQKBgQDT2uGrikeeKpDOwtLtwq4qNthkcRHvwobB\n1swqZ3N7SqL9EgbdcWmmuxk0pGaf1fKmPyVIVzkz0aSlGAqYrcQJL7k2MTfvTeGH\nNdIL/xProRu55mQlGSenyaDv5jzDVnkC5TRDzgjdq1aW5anqs2D2iqbMUn9LG2k2\nfBD/KIwPbQKBgDjwnecwl2aXhjU1I5An9nb/CBO5Z2Bhyv4UeooAoXgNNlRKEOy3\nlLcQycfRNR7eKdsCz3JyVYUrefhj6wORWKvS+MqncIcO61PHdonlMUWIzwI5ZKOq\nY4GFGe0dt56OMjJ/iViMC9S5mMIgeZrbVPmQkM6j78G5wVzWnzmoau5BAoGAeMrp\nNvyd/xG4BRvSVlxVH56r3QEXQARC/4ywVlEr6BVTP0YjAenjWnx9T6WZGfNL6fxB\nDrEk3WXgIX3GtO0GxFIgoUSI5voZ6BUI0Ww7+HKgs2somHpyQNnW2FIHPT01vC/h\nj/OO3I0PzvPd4QMr+wZtOjyjdbiIUdeFfWaqDTUCgYAKJ6ohl1k0YNhDYE7XzJCC\nF+lbPmJojz1EN6MSKnBxAXgpiy89hMip4WkDLOYO9MzGeQmhnCkcpKd8C+eDYMNh\nMSSqKUKbxFbDdg3htY+oMgfukHNbcif2aL+QCO8Y3nMr215g1L5LdK5yLn5AB2gJ\nwdum30s4bpH36UDQs+H3Nw==\n-----END PRIVATE KEY-----\n",
+    scopes: SCOPES
+})
 
 let token = "";
 // mail transporter
@@ -247,13 +255,7 @@ io.on("connection", (socket) => {
             })
 });
 
-const {JWT} = require("google-auth-library");
-const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
-const client = new JWT({
-    email: "firebase-adminsdk-aqks0@video-medical-visit.iam.gserviceaccount.com",
-    key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDJADS7AibFQmI1\nVJ+y7kYhTKZ1I4povjoRF+RR+wfvJJo7g4LHWsW3/chyePdHDtsvcgEkBc0ya2nG\nUmrli/uXliA50dmLSpkGMNd9T9w9LELsoSED+byMGLG4LqSsYotHHFpIPXVFo8zR\nSJHzYU4czVjS5zDDhX2kgndQYXADmsE6CYxRtuU/bs19IAHe26JHvJt0qYM+UXas\n7+aLtPpuUqgTxjM9D7SAgwEL9ujjzzwHFw2fpHzKTW5SJmGC1KUDATXfrLnYc4IL\ne4AqdwqRbb0+x5GWj4pCwarF2CNosq+Zf0AsHePDEwZF8e2nBXrI3Qkggs71wkS2\ncsiN7eu9AgMBAAECggEAKq5OxCQTkAEF4h2vUJssjJ8eXJLYrd+w7FbGrorP1z3O\nO1N0ZnkVsXlkAjzCA1Z6AAPlDp1lwm5RFmIDXW1hVgG0o5p2J5AGWOxvoaYe1eWL\na3xWiqXR3ezTdhD/ejRtr0KrwBm+yHQdBpaymTvhDpgjI5ugfPAgaxmiFNEv7C+k\nhvP+ITUZvqXi1uHRmbWoqG4mlZVbBxRCV9CZrlCWS39J1j2u0Hj6sazAY09XWiLG\nGq1J3Bs5Iwbc1MGtyJLMxfmB0AJMNBC3ijmSlNh25GEadXu8nXcRaLEeWGU5s63V\nVOaDu1UBHE4nVA5eE2Lul/4zt1xMc5t0qCJhoJ2ZMQKBgQDy4lJgFU3mQWVz01uZ\nBNeo6g6TUdSTDEDH8GoUlK+QzpX8aFOO1oBYEZwJP1Ucx9OhkatxZnB+6rl7mWqy\nbRvhAIsfy6qp8k9bjlW70DLVC71Elr3mylVgUYC8nJJMvlzrs2rXGbuhcst5yfFk\nhdQ58aStXgP1wt4NVGELyn2LkQKBgQDT2uGrikeeKpDOwtLtwq4qNthkcRHvwobB\n1swqZ3N7SqL9EgbdcWmmuxk0pGaf1fKmPyVIVzkz0aSlGAqYrcQJL7k2MTfvTeGH\nNdIL/xProRu55mQlGSenyaDv5jzDVnkC5TRDzgjdq1aW5anqs2D2iqbMUn9LG2k2\nfBD/KIwPbQKBgDjwnecwl2aXhjU1I5An9nb/CBO5Z2Bhyv4UeooAoXgNNlRKEOy3\nlLcQycfRNR7eKdsCz3JyVYUrefhj6wORWKvS+MqncIcO61PHdonlMUWIzwI5ZKOq\nY4GFGe0dt56OMjJ/iViMC9S5mMIgeZrbVPmQkM6j78G5wVzWnzmoau5BAoGAeMrp\nNvyd/xG4BRvSVlxVH56r3QEXQARC/4ywVlEr6BVTP0YjAenjWnx9T6WZGfNL6fxB\nDrEk3WXgIX3GtO0GxFIgoUSI5voZ6BUI0Ww7+HKgs2somHpyQNnW2FIHPT01vC/h\nj/OO3I0PzvPd4QMr+wZtOjyjdbiIUdeFfWaqDTUCgYAKJ6ohl1k0YNhDYE7XzJCC\nF+lbPmJojz1EN6MSKnBxAXgpiy89hMip4WkDLOYO9MzGeQmhnCkcpKd8C+eDYMNh\nMSSqKUKbxFbDdg3htY+oMgfukHNbcif2aL+QCO8Y3nMr215g1L5LdK5yLn5AB2gJ\nwdum30s4bpH36UDQs+H3Nw==\n-----END PRIVATE KEY-----\n",
-    scopes: SCOPES
-})
+
 
 server.listen(process.env.PORT,()=>{
     console.log("Server is connected with",process.env.PORT);
