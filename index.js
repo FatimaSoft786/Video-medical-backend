@@ -24,6 +24,39 @@ let transporter = nodemailer.createTransport({
         pass: process.env.SMTP_PASSWORD
     }
 });
+//Access token
+async function getAccessToken(){
+    const tokens = await client.authorize();
+    token = tokens.access_token;
+    console.log(token);
+    return tokens.access_token
+}
+getAccessToken();
+//Push notification
+async function sendPushNotification(deviceToken,accessToken){
+  const notification = {
+    "title": "Test",
+    "body": "Hi notificAtion"
+  }
+    const message = {
+      "token": deviceToken,
+      "notification": notification
+    }
+    const messageJSON = {message}
+   const headers = {
+  'Authorization':  `Bearer ${accessToken}`,
+  'Content-Type': 'application/json',
+
+};
+    axios.post('https://fcm.googleapis.com/v1/projects/video-medical-visit/messages:send',messageJSON, { headers })
+  .then(response => {
+    console.log('Response data:', response.data);
+  })
+  .catch(error => {
+    console.error('Error making POST request:', error);
+  });
+    
+}
 
 const endpointSecret = process.env.ENDPOINT
 app.post(
@@ -59,6 +92,7 @@ app.post(
          const doctor = await userModel.findById(
           paymentIntent.metadata.doctor
         );
+        sendPushNotification(doctor.device_token,token);
           let mailOption = {
                 from: process.env.SMTP_MAIL,
                 to: patient.email,
@@ -220,40 +254,6 @@ const client = new JWT({
     key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDJADS7AibFQmI1\nVJ+y7kYhTKZ1I4povjoRF+RR+wfvJJo7g4LHWsW3/chyePdHDtsvcgEkBc0ya2nG\nUmrli/uXliA50dmLSpkGMNd9T9w9LELsoSED+byMGLG4LqSsYotHHFpIPXVFo8zR\nSJHzYU4czVjS5zDDhX2kgndQYXADmsE6CYxRtuU/bs19IAHe26JHvJt0qYM+UXas\n7+aLtPpuUqgTxjM9D7SAgwEL9ujjzzwHFw2fpHzKTW5SJmGC1KUDATXfrLnYc4IL\ne4AqdwqRbb0+x5GWj4pCwarF2CNosq+Zf0AsHePDEwZF8e2nBXrI3Qkggs71wkS2\ncsiN7eu9AgMBAAECggEAKq5OxCQTkAEF4h2vUJssjJ8eXJLYrd+w7FbGrorP1z3O\nO1N0ZnkVsXlkAjzCA1Z6AAPlDp1lwm5RFmIDXW1hVgG0o5p2J5AGWOxvoaYe1eWL\na3xWiqXR3ezTdhD/ejRtr0KrwBm+yHQdBpaymTvhDpgjI5ugfPAgaxmiFNEv7C+k\nhvP+ITUZvqXi1uHRmbWoqG4mlZVbBxRCV9CZrlCWS39J1j2u0Hj6sazAY09XWiLG\nGq1J3Bs5Iwbc1MGtyJLMxfmB0AJMNBC3ijmSlNh25GEadXu8nXcRaLEeWGU5s63V\nVOaDu1UBHE4nVA5eE2Lul/4zt1xMc5t0qCJhoJ2ZMQKBgQDy4lJgFU3mQWVz01uZ\nBNeo6g6TUdSTDEDH8GoUlK+QzpX8aFOO1oBYEZwJP1Ucx9OhkatxZnB+6rl7mWqy\nbRvhAIsfy6qp8k9bjlW70DLVC71Elr3mylVgUYC8nJJMvlzrs2rXGbuhcst5yfFk\nhdQ58aStXgP1wt4NVGELyn2LkQKBgQDT2uGrikeeKpDOwtLtwq4qNthkcRHvwobB\n1swqZ3N7SqL9EgbdcWmmuxk0pGaf1fKmPyVIVzkz0aSlGAqYrcQJL7k2MTfvTeGH\nNdIL/xProRu55mQlGSenyaDv5jzDVnkC5TRDzgjdq1aW5anqs2D2iqbMUn9LG2k2\nfBD/KIwPbQKBgDjwnecwl2aXhjU1I5An9nb/CBO5Z2Bhyv4UeooAoXgNNlRKEOy3\nlLcQycfRNR7eKdsCz3JyVYUrefhj6wORWKvS+MqncIcO61PHdonlMUWIzwI5ZKOq\nY4GFGe0dt56OMjJ/iViMC9S5mMIgeZrbVPmQkM6j78G5wVzWnzmoau5BAoGAeMrp\nNvyd/xG4BRvSVlxVH56r3QEXQARC/4ywVlEr6BVTP0YjAenjWnx9T6WZGfNL6fxB\nDrEk3WXgIX3GtO0GxFIgoUSI5voZ6BUI0Ww7+HKgs2somHpyQNnW2FIHPT01vC/h\nj/OO3I0PzvPd4QMr+wZtOjyjdbiIUdeFfWaqDTUCgYAKJ6ohl1k0YNhDYE7XzJCC\nF+lbPmJojz1EN6MSKnBxAXgpiy89hMip4WkDLOYO9MzGeQmhnCkcpKd8C+eDYMNh\nMSSqKUKbxFbDdg3htY+oMgfukHNbcif2aL+QCO8Y3nMr215g1L5LdK5yLn5AB2gJ\nwdum30s4bpH36UDQs+H3Nw==\n-----END PRIVATE KEY-----\n",
     scopes: SCOPES
 })
-async function getAccessToken(){
-    const tokens = await client.authorize();
-    token = tokens.access_token;
-    console.log(token);
-    return tokens.access_token
-}
-getAccessToken();
-
-async function sendPushNotification(deviceToken,accessToken){
-  const notification = {
-    "title": "Test",
-    "body": "Hi notificAtion"
-  }
-    const message = {
-      "token": deviceToken,
-      "notification": notification
-    }
-    const messageJSON = {message}
-   const headers = {
-  'Authorization':  `Bearer ${accessToken}`,
-  'Content-Type': 'application/json',
-
-};
-    axios.post('https://fcm.googleapis.com/v1/projects/video-medical-visit/messages:send',messageJSON, { headers })
-  .then(response => {
-    console.log('Response data:', response.data);
-  })
-  .catch(error => {
-    console.error('Error making POST request:', error);
-  });
-    
-}
-//sendPushNotification("fiWynh9SPlAScGCP9hrwpR:APA91bFPJVT-UddJm8m58gOa0JRIChbX8tSTAO_akUrMqkUkaeOl4-vfozGlkW9gf1-Aawbna6ij0KwHXONp5v1hg1LAQFpvqvV-KqbiXkw-poIVcfveN8Phl5rvjZ21WzqZYKLIbzqW","ya29.c.c0ASRK0GY5110K37sSjyJ4rssQv9B5cVk259Wpk-I-5O6mtvExaHP1RStnTzftmHza98_SceZ2YkPTP6uN3-lWBjfChD-SI_R8cts9sCK5Riz5GqPiYJG9fFCgh4h_LvH-0eVguz4f1Hc3100CrAnESL0QaMvSdvpqXTOmnjDoH7Dth_mednSipSVdOAxHLcQYHcD66C278-sysHEd2kzJUVjS80fq7ynL_sY4G7qz2LWiGAm9FUGTy0AWzJ97_6-lhkzKsotoIEVzZ8ISBw1AJ3et20742UUEqFvP4f5aSMnL0kZLgPwJKggcwyTJMRp-DK7Kt75i_jVfWynCuX6dTuCslCaMyM1GSoIRo113fMi9Jx1_5xaHWmAo6wH387Di0cjpncB1O3Ye2kf-kpu4ZQnp_S5vfvf-x2cQ6fnoW47Wc5VgpSlygM8xkvl9QjJia2libzfqqladt851I1VlvmhUZqIX5waz0Ja-aqM2uXSvzX7QvIS6FJblrdfq3dMt86u0-ss-FMtzMpa8nk8gtUfh-p7JVJ6eMjSBzaS5gMyw4mvn7UU-JYV5Jveiffkexqfq1SnyOzQzXoh275OtwkuvwvUtXFo8c3QiBlh0mJQupWuM28xV6JfJRhniQfxeqpWImuq_RncBeMgY02tqviIFwqU0ffyfOb-i6YJ1g6ar4pqu49Vl8dUBBiXuaUcVXWsnx80IXcczS50X2UFOjYqoOUJIwOYimdI1xMkJ39eUz1u8nso4-cRIgthWBRsO2xpSIyayBOQegdBynz0OdI5RQ2_lwk7R-4QIY6nsVRUxJBUxeqdy4n06WltplvagzOVr72-RW8eUFfmy-ZjiSJ3IWsM8fh3m5ZWJirpfg4fhxJyxI6S2OSylMgnzl2lU6XOeMqsh8JRMaJBQvmz-3-xZWQqp1Q_iOapv7XyYvYchdqV3Ys5tB8ImbWzS-O-fUjgIRdI_g9opRRIFOhypaszr0a9__VdQJFQFx0rjgaR7jBSrd84gZ2w");
-
 
 server.listen(process.env.PORT,()=>{
     console.log("Server is connected with",process.env.PORT);
