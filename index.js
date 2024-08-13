@@ -100,7 +100,7 @@ app.post(
          const doctor = await userModel.findById(
           paymentIntent.metadata.doctor
         );
-        sendPushNotification(doctor.device_token,token);
+      //  sendPushNotification(doctor.device_token,token);
           let mailOption = {
                 from: process.env.SMTP_MAIL,
                 to: patient.email,
